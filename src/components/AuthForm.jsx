@@ -1,4 +1,5 @@
 "use client";
+import Image from 'next/image';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -29,6 +30,10 @@ const AuthForm = () => {
   async function handleSignup(e) {
     e.preventDefault();
     console.log(signupDetails);
+    if(signupDetails.password.trim() !== signupDetails.confirmpassword.trim()) {
+        toast.error("Password and Confirm password should be same")
+        return
+    }
     toast.success("You Pressed Signup Button")
   }
 
