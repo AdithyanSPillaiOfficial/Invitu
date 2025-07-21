@@ -1,5 +1,6 @@
 "use client";
 import { useLoading } from '@/contexts/LoadingContext';
+import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
@@ -29,8 +30,36 @@ const AuthForm = () => {
   async function loginHandler(e) {
     e.preventDefault()
     console.log(loginDetails)
-    toast.success("Login Sucessfull")
-    router.replace('/dashboard');
+
+    setLoading(true)
+    const result = await fetch('/api/auth/login', {
+      method : 'POST',
+      headers : {
+        'Content-Type' : 'application/json'
+      },
+      body : JSON.stringify(loginDetails)
+    });
+
+    if(result.ok) {
+      const res = await result.json();
+      if(res.success) {
+        console.log("Login Sucess", res)
+        Cookies.set("sessionid", res.sessionid, {expires : 1});
+        Cookies.set("user", res.user)
+        toast.success("Login Sucessfull")
+        router.replace('/dashboard');
+      }
+      else {
+        if(res.rescode === 310) {
+          toast.error("Invalid Credentials");
+        } else {
+          toast.error("Something went wrong");
+        }
+      }
+    } else {
+      toast.error("Something Went Wrong");
+    }
+    setLoading(false)
   }
 
   async function handleSignup(e) {
