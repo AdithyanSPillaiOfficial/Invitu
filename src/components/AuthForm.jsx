@@ -1,5 +1,6 @@
 "use client";
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -17,6 +18,8 @@ const AuthForm = () => {
     confirmpassword : ''
   });
 
+  const router = useRouter();
+
   const handleToggle = () => {
     setShowLogin(!showLogin);
   };
@@ -24,7 +27,8 @@ const AuthForm = () => {
   async function loginHandler(e) {
     e.preventDefault()
     console.log(loginDetails)
-    toast.success("You Pressed Login Button")
+    toast.success("Login Sucessfull")
+    router.replace('/dashboard');
   }
 
   async function handleSignup(e) {
