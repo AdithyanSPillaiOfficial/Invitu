@@ -1,10 +1,12 @@
 "use client";
+import { useLoading } from '@/contexts/LoadingContext';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
 const AuthForm = () => {
+  const {setLoading} = useLoading();
   const [showLogin, setShowLogin] = useState(true);
   const [loginDetails, setLoginDetails] = useState({
     email : '',
@@ -38,7 +40,29 @@ const AuthForm = () => {
         toast.error("Password and Confirm password should be same")
         return
     }
-    toast.success("You Pressed Signup Button")
+    setLoading(true);
+    
+    const result = await fetch('/api/auth/signup', {
+      method : "POST",
+      headers : {
+        'Content-Type' : 'application/json'
+      },
+      body : JSON.stringify({...signupDetails, confirmpassword : null})
+    });
+    if(result.ok) {
+      const res = await result.json();
+      if(res.sucess) {
+        toast.success("User Registered Sucessfully");
+        setShowLogin(true);
+      }
+      else {
+        toast.error("Failed to register user");
+      }
+    }
+    else {
+      toast.error("Failed to register user")
+    }
+    setLoading(false);
   }
 
   return (
