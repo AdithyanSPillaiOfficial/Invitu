@@ -15,6 +15,7 @@ const AuthForm = () => {
     rememberme : false
   });
   const [signupDetails, setSignupDetails] = useState({
+    name : '',
     username : '',
     email : '',
     password : '',
@@ -45,7 +46,7 @@ const AuthForm = () => {
       if(res.success) {
         console.log("Login Sucess", res)
         Cookies.set("sessionid", res.sessionid, {expires : 1});
-        Cookies.set("user", res.user)
+        Cookies.set("user", JSON.stringify(res.user));
         toast.success("Login Sucessfull")
         router.replace('/dashboard');
       }
@@ -175,13 +176,26 @@ const AuthForm = () => {
             <p className="text-center text-gray-600 mb-8">Sign up to begin your beautiful journey.</p>
 
             <form className="space-y-5" onSubmit={handleSignup}>
+            <div>
+                <label htmlFor="signup-username" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input
+                  type="text"
+                  id="signup-name"
+                  name="name"
+                  placeholder="Your Romantic Name"
+                  className="w-full px-4 py-2 border outline-teal-600 border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition duration-200 ease-in-out"
+                  required
+                  value={signupDetails.name}
+                  onChange={(e) => setSignupDetails(signupDetails => ({...signupDetails, name : e.target.value}))}
+                />
+              </div>
               <div>
                 <label htmlFor="signup-username" className="block text-sm font-medium text-gray-700 mb-1">Username</label>
                 <input
                   type="text"
                   id="signup-username"
                   name="username"
-                  placeholder="Your Romantic Name"
+                  placeholder="Your lovely Username"
                   className="w-full px-4 py-2 border outline-teal-600 border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition duration-200 ease-in-out"
                   required
                   value={signupDetails.username}
