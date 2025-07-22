@@ -25,7 +25,7 @@ function Sidebar({isOpen, setSidebarOpen}) {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         <h2 className="text-2xl font-extrabold">EventFlow</h2> */}
-                        <Image src="/horizontal_white.png" width={200} height={50} alt='Invitu' />
+                        <Image src="/horizontal_white.png" width={200} height={50} alt='Invitu' priority />
                     </div>
                     {/* Close button for mobile sidebar */}
                     <button id="closeSidebarBtn" className="md:hidden text-white hover:text-teal-200 focus:outline-none p-2 rounded-full hover:bg-teal-700 transition duration-300" onClick={() => setSidebarOpen(false)}>
