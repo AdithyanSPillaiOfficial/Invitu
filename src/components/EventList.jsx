@@ -4,29 +4,42 @@ import EventTile from './EventTile';
 import AddEventPopup from './AddEventPopup';
 
 const stats = [
-  { title: 'Total Events', value: 128, icon: (
-    <svg className="w-10 h-10 text-teal-400 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-    </svg>
-  )},
-  { title: 'Upcoming Week', value: 6, icon: (
-    <svg className="w-10 h-10 text-teal-400 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  )},
-  { title: 'Attendees', value: '2,450', icon: (
-    <svg className="w-10 h-10 text-teal-400 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857..." />
-    </svg>
-  )},
-  { title: 'New Registrations', value: 52, icon: (
-    <svg className="w-10 h-10 text-teal-400 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3..." />
-    </svg>
-  )}
+  {
+    title: 'Total Events', value: 128, icon: (
+      <svg className="w-10 h-10 text-teal-400 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+    )
+  },
+  {
+    title: 'Upcoming Week', value: 6, icon: (
+      <svg className="w-10 h-10 text-teal-400 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    )
+  },
+  {
+    title: 'Attendees', value: '2,450', icon: (
+      <svg className="w-10 h-10 text-teal-400 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857..." />
+      </svg>
+    )
+  },
+  {
+    title: 'New Registrations', value: 52, icon: (
+      <svg className="w-10 h-10 text-teal-400 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3..." />
+      </svg>
+    )
+  }
 ];
 
-const events = [
+const EventList = () => {
+
+  const [addEventOpen, setAddEventOpen] = useState(false);
+
+
+const [events, setEvents] = useState([
   {
     title: 'Team Meeting',
     date: 'July 25, 2025',
@@ -63,11 +76,9 @@ const events = [
     time: '3:00 PM - 5:00 PM',
     location: 'Development Lab'
   }
-];
+]);
 
-const EventList = () => {
 
-    const [addEventOpen, setAddEventOpen] = useState(false);
   return (
     <main className="flex-grow p-4 md:p-6 h-full overflow-y-auto max-h-full box-border pb-20">
       {/* Stats Section */}
@@ -97,12 +108,12 @@ const EventList = () => {
       {/* Events Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 mb-28">
         {events.map((event, index) => (
-          <EventTile event={event} index={index} key={index}/>
+          <EventTile event={event} index={index} key={index} />
         ))}
       </div>
 
       {addEventOpen && (
-        <AddEventPopup togglePopup={setAddEventOpen}/>
+        <AddEventPopup togglePopup={setAddEventOpen} setEvents={setEvents} />
       )}
     </main>
   );

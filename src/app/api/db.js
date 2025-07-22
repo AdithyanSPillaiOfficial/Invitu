@@ -75,7 +75,8 @@ const getUserWithSession = async (sessionId) => {
         const collection = db.collection("sessions");
         const filteredObjects = await collection.find({ _id : new ObjectId(sessionId) }).toArray();
         const userCollection = db.collection("users");
-        const user = await userCollection.find({_id : new ObjectId(filteredObjects[0].userkey)}).toArray();
+        const user = await userCollection.find({_id : new ObjectId(filteredObjects[0].id)}).toArray();
+        delete user[0].password
         return user[0];
     } catch (error) {
         console.log(error);

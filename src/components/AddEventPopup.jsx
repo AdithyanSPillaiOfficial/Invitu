@@ -1,10 +1,13 @@
+import { useLoading } from '@/contexts/LoadingContext';
 import Popup from '@/widgets/Popup'
+import Cookies from 'js-cookie';
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 
-function AddEventPopup({ togglePopup }) {
+function AddEventPopup({ togglePopup, setEvents }) {
+  const {setLoading} = useLoading();
   const [eventDetails, setEventDetails] = useState({
-    name: '',
+    title: '',
     type: '',
     bridename: '',
     groomname: '',
@@ -15,7 +18,36 @@ function AddEventPopup({ togglePopup }) {
     time: '',
     endtime : ''
   });
-  const [enableEndtime, setEnableEndtime] = useState(false)
+  const [enableEndtime, setEnableEndtime] = useState(false);
+
+  async function handleAddEvent(e) {
+    e.preventDefault();
+    setLoading(true);
+    const result = await fetch("/api/addevent", {
+      method : "POST",
+      headers : {
+        'Content-Type' : 'application/json'
+      },
+      body : JSON.stringify({
+        sessionid : Cookies.get("sessionid"),
+        event : eventDetails
+      })
+    });
+
+    if(result.ok) {
+      const res = await result.json();
+
+      if(res.success) {
+        setEvents(events => [...events, eventDetails]);
+        toast.success("Event Added Sucessfully");
+        togglePopup(false);
+      }
+      else {
+        toast.error(res.error);
+      }
+    }
+    setLoading(false);
+  }
   return (
     <div>
       <Popup title="Add Event" togglePopup={togglePopup}>
@@ -23,18 +55,18 @@ function AddEventPopup({ togglePopup }) {
           <h2 className="text-3xl font-semibold text-center text-teal-700 mb-6">Make a Story With Us!</h2>
           <p className="text-center text-gray-600 mb-4">Enter the details given below.</p>
 
-          <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); toast.success("Event Added"); }}>
+          <form className="space-y-5" onSubmit={(e) => handleAddEvent(e)}>
             <div>
-              <label htmlFor="event-name" className="block text-sm font-medium text-gray-700 mb-1">Event Name</label>
+              <label htmlFor="event-title" className="block text-sm font-medium text-gray-700 mb-1">Event Title</label>
               <input
                 type="text"
-                id="event-name"
-                name="name"
+                id="event-title"
+                name="title"
                 placeholder="Your Special Event"
                 className="w-full px-4 py-2 border text-black outline-teal-600 border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition duration-200 ease-in-out"
                 required
-                value={eventDetails.name}
-                onChange={(e) => setEventDetails({ ...eventDetails, name: e.target.value })}
+                value={eventDetails.title}
+                onChange={(e) => setEventDetails({ ...eventDetails, title: e.target.value })}
               />
             </div>
 
