@@ -25,7 +25,7 @@ export async function POST(request) {
             })
         }
 
-        const eventId = await addObject(req.event, "events");
+        const eventId = await addObject({...req.event, owner : user._id}, "events");
         if (eventId) {
             return NextResponse.json({
                 success: true,
