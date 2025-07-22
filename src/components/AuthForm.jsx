@@ -3,10 +3,20 @@ import { useLoading } from '@/contexts/LoadingContext';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 const AuthForm = () => {
+  const router = useRouter();
+  const sessionId = Cookies.get('sessionid');
+  useEffect(() => {
+    if(sessionId) {
+      toast.info("You have already Logged in");
+      router.replace('/dashboard');
+    }    
+    
+  }, [])
+  
   const {setLoading} = useLoading();
   const [showLogin, setShowLogin] = useState(true);
   const [loginDetails, setLoginDetails] = useState({
@@ -21,8 +31,6 @@ const AuthForm = () => {
     password : '',
     confirmpassword : ''
   });
-
-  const router = useRouter();
 
   const handleToggle = () => {
     setShowLogin(!showLogin);

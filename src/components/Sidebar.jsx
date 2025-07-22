@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation'
 import React from 'react'
@@ -6,6 +7,8 @@ import { toast } from 'react-toastify';
 function Sidebar({isOpen, setSidebarOpen}) {
     const router = useRouter();
     function handleLogout() {
+        Cookies.remove('sessionid');
+        Cookies.remove('user');
         toast.success("Logged Out Sucessfully");
         router.replace("/login");
     }

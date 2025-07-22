@@ -92,7 +92,7 @@ function AddEventPopup({ togglePopup }) {
                 />
               </div>
               {enableEndtime && (<div className='w-1/2'>
-                <label htmlFor="event-time" className="block text-sm font-medium text-gray-700 mb-1">Event Time</label>
+                <label htmlFor="event-time" className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
                 <input
                   type="time"
                   id="event-time"
