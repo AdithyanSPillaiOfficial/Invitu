@@ -10,8 +10,9 @@ function DashboardLayout({children}) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const router = useRouter();
     const sessionId = Cookies.get("sessionid");
+    const user = Cookies.get('user');
     useEffect(() => {
-      if(!sessionId){
+      if(!(sessionId || user)){
         toast.warning("Please Login")
         router.replace("/login")
       }

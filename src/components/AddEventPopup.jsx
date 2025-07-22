@@ -12,7 +12,8 @@ function AddEventPopup({ togglePopup }) {
     date: '',
     housename: '',
     otherevent: '',
-    time: ''
+    time: '',
+    endtime : ''
   });
   const [enableEndtime, setEnableEndtime] = useState(false)
   return (
@@ -92,16 +93,17 @@ function AddEventPopup({ togglePopup }) {
                 />
               </div>
               {enableEndtime && (<div className='w-1/2'>
-                <label htmlFor="event-time" className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+                <label htmlFor="event-endtime" className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
                 <input
                   type="time"
-                  id="event-time"
-                  name="time"
-                  placeholder="Your Special Time"
+                  id="event-endtime"
+                  name="endtime"
+                  placeholder="Your Special Conclusive Time"
                   className="w-full px-4 py-2 border text-black outline-teal-600 border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition duration-200 ease-in-out"
                   required
-                  value={eventDetails.time}
-                  onChange={(e) => setEventDetails({ ...eventDetails, time: e.target.value })}
+                  value={eventDetails.endtime}
+                  min={eventDetails.time}
+                  onChange={(e) => setEventDetails({ ...eventDetails, endtime: e.target.value })}
                 />
               </div>)}
             </div>
@@ -157,7 +159,7 @@ function AddEventPopup({ togglePopup }) {
                   <input
                     type="text"
                     id="event-housename"
-                    name="groomname"
+                    name="housename"
                     placeholder="Your Beautiful House Name"
                     className="w-full px-4 py-2 border text-black outline-teal-600 border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition duration-200 ease-in-out"
                     required

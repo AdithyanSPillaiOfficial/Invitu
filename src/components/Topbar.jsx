@@ -1,14 +1,19 @@
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 import React from 'react'
 
-function Topbar({setSidebarOpen}) {
+function Topbar({ setSidebarOpen }) {
+    const router = useRouter();
     function setUserImage() {
-        const user = JSON.parse(Cookies.get('user'));
-        console.log(user)
-        const name = user.name;
-        const seperatedname = name.split(" ");
-        const placeholdername = seperatedname[0].toUpperCase().charAt(0)+seperatedname[1].toUpperCase().charAt(0)
-        return placeholdername
+        if (Cookies.get('user')) {
+            const user = JSON.parse(Cookies.get('user'));
+            console.log(user)
+            const name = user.name;
+            const seperatedname = name.split(" ");
+            const placeholdername = seperatedname[0].toUpperCase().charAt(0) + seperatedname[1].toUpperCase().charAt(0)
+            return placeholdername
+        }
+        else router.replace('/login')
     }
     return (
         <div>
