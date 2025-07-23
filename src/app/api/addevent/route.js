@@ -5,7 +5,6 @@ export async function POST(request) {
     try {
         const req = await request.json();
 
-        console.log(req)
 
         if(!(req.sessionid && req.event)) {
             return NextResponse.json({

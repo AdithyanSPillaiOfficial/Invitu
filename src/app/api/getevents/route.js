@@ -15,7 +15,6 @@ export async function POST(request) {
         const user = await getUserWithSession(req.sessionid);
         if (user) {
             const events = await fetchObjectsByParam("owner", user._id, "events");
-            console.log(events);
             return NextResponse.json({
                 success: true,
                 rescode: 100,
