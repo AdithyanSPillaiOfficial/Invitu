@@ -1,7 +1,9 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import EventTile from './EventTile';
 import AddEventPopup from './AddEventPopup';
+import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 
 const stats = [
   {
@@ -39,44 +41,70 @@ const EventList = () => {
   const [addEventOpen, setAddEventOpen] = useState(false);
 
 
-const [events, setEvents] = useState([
-  {
-    title: 'Team Meeting',
-    date: 'July 25, 2025',
-    time: '10:00 AM - 11:00 AM',
-    location: 'Conference Room A'
-  },
-  {
-    title: 'Project Deadline Review',
-    date: 'August 1, 2025',
-    time: '2:00 PM - 3:30 PM',
-    location: 'Online (Zoom)'
-  },
-  {
-    title: 'Client Presentation',
-    date: 'August 5, 2025',
-    time: '11:00 AM - 12:00 PM',
-    location: 'Client Office'
-  },
-  {
-    title: 'Company Picnic',
-    date: 'August 15, 2025',
-    time: '1:00 PM - 5:00 PM',
-    location: 'Central Park'
-  },
-  {
-    title: 'Marketing Strategy Session',
-    date: 'August 20, 2025',
-    time: '9:00 AM - 12:00 PM',
-    location: 'Marketing Department'
-  },
-  {
-    title: 'Product Launch Prep',
-    date: 'August 28, 2025',
-    time: '3:00 PM - 5:00 PM',
-    location: 'Development Lab'
-  }
-]);
+  // const [events, setEvents] = useState([
+  //   {
+  //     title: 'Team Meeting',
+  //     date: 'July 25, 2025',
+  //     time: '10:00 AM - 11:00 AM',
+  //     location: 'Conference Room A'
+  //   },
+  //   {
+  //     title: 'Project Deadline Review',
+  //     date: 'August 1, 2025',
+  //     time: '2:00 PM - 3:30 PM',
+  //     location: 'Online (Zoom)'
+  //   },
+  //   {
+  //     title: 'Client Presentation',
+  //     date: 'August 5, 2025',
+  //     time: '11:00 AM - 12:00 PM',
+  //     location: 'Client Office'
+  //   },
+  //   {
+  //     title: 'Company Picnic',
+  //     date: 'August 15, 2025',
+  //     time: '1:00 PM - 5:00 PM',
+  //     location: 'Central Park'
+  //   },
+  //   {
+  //     title: 'Marketing Strategy Session',
+  //     date: 'August 20, 2025',
+  //     time: '9:00 AM - 12:00 PM',
+  //     location: 'Marketing Department'
+  //   },
+  //   {
+  //     title: 'Product Launch Prep',
+  //     date: 'August 28, 2025',
+  //     time: '3:00 PM - 5:00 PM',
+  //     location: 'Development Lab'
+  //   }
+  // ]);
+
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    async function fetchEvents() {
+      const result = await fetch("/api/getevents", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ sessionid: Cookies.get("sessionid") })
+      });
+      if (result.ok) {
+        const res = await result.json();
+        if (res.success) {
+          if (res.events && res.events.length > 0) {
+            setEvents(res.events);
+          }
+          else toast.warning("You dont have any events registered");
+        }
+        else console.log(res.error)
+      }
+    }
+    fetchEvents();
+  }, [])
+
 
 
   return (

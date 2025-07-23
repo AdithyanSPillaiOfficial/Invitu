@@ -9,7 +9,7 @@ export async function POST(request) {
 
         if(!(req.sessionid && req.event)) {
             return NextResponse.json({
-                sucess : false,
+                success : false,
                 rescode : 0,
                 error : "Invalid Request"
             })
