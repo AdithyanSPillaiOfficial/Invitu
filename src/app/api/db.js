@@ -42,12 +42,25 @@ const addObject = async (newObject, collectionName) => {
 };
 
 
-// Function to fetch objects based on parameters
+// Function to fetch objects based on parameter
 const fetchObjectsByParam = async (paramKey, paramValue, collectionName) => {
     try {
         await connectToDatabase();
         const collection = db.collection(collectionName);
         const filteredObjects = await collection.find({ [paramKey]: paramValue }).toArray();
+        return filteredObjects;
+    } catch (err) {
+        console.error('Failed to fetch objects:', err);
+        return [];
+    }
+};
+
+// Function to fetch objects based on parameters
+const fetchObjectsByParams = async (collectionName, params) => {
+    try {
+        await connectToDatabase();
+        const collection = db.collection(collectionName);
+        const filteredObjects = await collection.find(params).toArray();
         return filteredObjects;
     } catch (err) {
         console.error('Failed to fetch objects:', err);
@@ -114,4 +127,4 @@ const updateDocumentwithId = async (collectionName, documentId, parameter, value
 }
 
 // Export the functions for external usage
-module.exports = { addObject, fetchObjectsByParam, getAllObjects, getUserWithSession, updateDocumentwithId };
+module.exports = { addObject, fetchObjectsByParam, getAllObjects, getUserWithSession, updateDocumentwithId, fetchObjectsByParams };
