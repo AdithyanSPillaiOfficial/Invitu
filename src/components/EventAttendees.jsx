@@ -2,12 +2,15 @@
 import React, { useEffect, useState } from 'react'
 import AddAttendeePopup from './AddAttendeePopup';
 import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 function EventAttendees({ eventId }) {
     const [popupActive, setPopupActive] = useState(false);
     const [attendees, setAttendees] = useState([]);
     const [attendeesArr, setAttendeesArr] = useState([])
     const [searchString, setSearchString] = useState('');
+    const router = useRouter();
 
     function setUserImage(name) {
         // const user = JSON.parse(Cookies.get('user'));
