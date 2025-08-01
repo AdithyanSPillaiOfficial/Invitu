@@ -153,7 +153,9 @@ function EventView({ eventid }) {
                 <button className="bg-teal-600 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 ease-in-out transform hover:scale-105">
                     Share Event
                 </button>
-                <button className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 ease-in-out transform hover:scale-105">
+                <button onClick={() => {
+                    router.push(`${window.location.pathname}/attendees`);
+                }} className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 ease-in-out transform hover:scale-105">
                     Manage Attendees
                 </button>
             </section>
