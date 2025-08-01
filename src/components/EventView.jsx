@@ -5,6 +5,7 @@ import { useLoading } from '@/contexts/LoadingContext';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { useDashboardContext } from '@/contexts/DashboardContext';
 
 
 function EventView({ eventid }) {
@@ -54,8 +55,10 @@ function EventView({ eventid }) {
     }
 
 
+    const {setTitle} = useDashboardContext();
 
     useEffect(() => {
+        setTitle("Event Overview")
         async function loadDetails() {
 
             const sessionId = Cookies.get("sessionid");

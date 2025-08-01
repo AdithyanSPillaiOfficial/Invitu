@@ -1,9 +1,12 @@
+"use client";
+import { useDashboardContext } from '@/contexts/DashboardContext';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 
 function Topbar({ setSidebarOpen }) {
     const router = useRouter();
+    const {title, setTitle} = useDashboardContext();
     function setUserImage() {
         if (Cookies.get('user')) {
             const user = JSON.parse(Cookies.get('user'));
@@ -26,7 +29,13 @@ function Topbar({ setSidebarOpen }) {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800">Dashboard Overview</h1>
+                    
+                    <button className='w-6 h-6 mr-4' onClick={() => router.back()}>
+                    <svg className='w-6 h-6 text-teal-600 hover:text-teal-800' fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 288 480 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-370.7 0 105.4-105.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
+                    </button>
+
+
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800">{title}</h1>
                 </div>
                 <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
                     <input

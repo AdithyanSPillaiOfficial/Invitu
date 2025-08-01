@@ -4,6 +4,7 @@ import EventTile from './EventTile';
 import AddEventPopup from './AddEventPopup';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
+import { useDashboardContext } from '@/contexts/DashboardContext';
 
 const stats = [
   {
@@ -82,6 +83,7 @@ const EventList = () => {
 
   const [events, setEvents] = useState([]);
 
+
   useEffect(() => {
     async function fetchEvents() {
       const result = await fetch("/api/getevents", {
@@ -106,6 +108,8 @@ const EventList = () => {
   }, [])
 
 
+  const { setTitle } = useDashboardContext();
+  setTitle("Dashboard Overview");
 
   return (
     <main className="flex-grow p-4 md:p-6 h-full overflow-y-auto max-h-full box-border pb-20">
