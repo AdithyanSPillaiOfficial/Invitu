@@ -4,18 +4,20 @@ import AddAttendeePopup from './AddAttendeePopup';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import InviteCodePopup from './InviteCodePopup';
 
 function EventAttendees({ eventId }) {
     const [popupActive, setPopupActive] = useState(false);
     const [attendees, setAttendees] = useState([]);
     const [attendeesArr, setAttendeesArr] = useState([])
     const [searchString, setSearchString] = useState('');
+    const [showInvite, setShowInvite] = useState({show : false, inviteid : ''});
     const router = useRouter();
 
     function setUserImage(name) {
         // const user = JSON.parse(Cookies.get('user'));
         const seperatedname = name.split(" ");
-        const placeholdername = seperatedname[0].toUpperCase().charAt(0) + seperatedname[1].toUpperCase().charAt(0)
+        const placeholdername = seperatedname[0].toUpperCase().charAt(0) + (seperatedname.length>1 ? seperatedname[1].toUpperCase().charAt(0) : '')
         return placeholdername
     }
 
@@ -42,7 +44,7 @@ function EventAttendees({ eventId }) {
             if (res.success) {
                 setAttendees(res.event.attendees || [])
                 setAttendeesArr(res.event.attendees || [])
-
+                console.log(res.event.attendees)
             }
             else {
                 toast.error(res.error);
@@ -68,6 +70,11 @@ function EventAttendees({ eventId }) {
             return attendeesArr
         }
         else return filtered
+    }
+
+    function successCallback(inviteid) {
+        fetchAttendees()
+        setShowInvite({show : true, inviteid : inviteid})
     }
 
     useEffect(() => {
@@ -115,7 +122,7 @@ function EventAttendees({ eventId }) {
                                 </svg>
                             </button>
                             {/* <!-- Share Button --> */}
-                            <button className="p-2 text-gray-400 hover:text-teal-500 transition-colors duration-200 rounded-full hover:bg-gray-100" title="Share">
+                            <button onClick={() => setShowInvite({show : true, inviteid : attendee.inviteid})} className="p-2 text-gray-400 hover:text-teal-500 transition-colors duration-200 rounded-full hover:bg-gray-100" title="Share">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
                                     <polyline points="16 6 12 2 8 6"></polyline>
@@ -136,7 +143,8 @@ function EventAttendees({ eventId }) {
                 ))}
 
             </div>
-            {popupActive && (<AddAttendeePopup setPopup={setPopupActive} eventId={eventId} fetchAttendees={fetchAttendees} />)}
+            {popupActive && (<AddAttendeePopup setPopup={setPopupActive} eventId={eventId} sucessCallback={successCallback} />)}
+            {showInvite.show && (<InviteCodePopup togglePopup={(val) => setShowInvite({...showInvite, show : val})} inviteId={showInvite.inviteid}  />)}
         </div>
     )
 }

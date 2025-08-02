@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { fetchObjectsByParams, getUserWithSession, updateDocumentwithId } from "../db";
+import { addObject, fetchObjectsByParams, getUserWithSession, updateDocumentObjectwithId, updateDocumentwithId } from "../db";
 import { ObjectId } from "mongodb";
 
 export async function POST(request) {
@@ -33,7 +33,18 @@ export async function POST(request) {
             })
         }
 
+        const {attendees, ...modEvent} = event; 
+        const addedInvite = await addObject({eventid : req.eventid, attendee : req.attendee, event : modEvent}, "invites");
+        if(!addedInvite) {
+            return NextResponse.json({
+                success : false,
+                rescode : 204,
+                error : "Error occured while adding invite"
+            })
+        }
+
         // const updatedEvent = await updateDocumentwithId("events", req.eventid, "attendees", [...event[0].attendees, req.attendee] );
+        req.attendee.inviteid = addedInvite;
         const updatedEvent = await updateDocumentwithId(
             "events",
             req.eventid,
@@ -41,12 +52,19 @@ export async function POST(request) {
             [...(event[0]?.attendees || []), req.attendee]
         );
 
+        // const updatedEvent = await updateDocumentObjectwithId(
+        //     "events",
+        //     req.eventid,
+        //     {attendees : [...(event[0]?.attendees || []), req.attendee], inviteid : addedInvite}
+        // );
+
 
         if (updatedEvent) {
             return NextResponse.json({
                 success: true,
                 rescode: 100,
-                event: event[0]
+                event: event[0],
+                inviteid : addedInvite
             })
         }
         else {

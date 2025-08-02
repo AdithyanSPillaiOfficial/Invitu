@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 
-function AddAttendeePopup({setPopup, eventId, fetchAttendees}) {
+function AddAttendeePopup({setPopup, eventId, sucessCallback}) {
     const [attendee, setAttendee] = useState({
         name : "",
         email : "",
@@ -29,8 +29,9 @@ function AddAttendeePopup({setPopup, eventId, fetchAttendees}) {
             const res = await result.json();
 
             if(res.success) {
+                console.log(res);
                 toast.success('Attendee Added Sucessfully');
-                fetchAttendees();
+                sucessCallback(res.inviteid);
                 setPopup(false);
             }
             else {

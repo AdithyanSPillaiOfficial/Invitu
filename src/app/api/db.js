@@ -126,5 +126,32 @@ const updateDocumentwithId = async (collectionName, documentId, parameter, value
     }
 }
 
+const updateDocumentObjectwithId = async (collectionName, documentId, updateObj) => {
+    try {
+        // const document = await fetchObjectsByParam("_id", new ObjectId(documentId),collectionName);
+        // console.log(document[0]._id.toString());
+
+        await connectToDatabase();
+        const collection = db.collection(collectionName);
+        const update = { 
+            $set: updateObj
+        }; // Replace with your update data
+        
+        const filter = { _id: new ObjectId(documentId) };
+
+        const result = await collection.updateOne(filter, update);
+        console.log(result);
+        if(result.modifiedCount > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
 // Export the functions for external usage
-module.exports = { addObject, fetchObjectsByParam, getAllObjects, getUserWithSession, updateDocumentwithId, fetchObjectsByParams };
+module.exports = { addObject, fetchObjectsByParam, getAllObjects, getUserWithSession, updateDocumentwithId, fetchObjectsByParams, updateDocumentObjectwithId };
