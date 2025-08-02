@@ -136,7 +136,7 @@ function EventAttendees({ eventId }) {
                 ))}
 
             </div>
-            {popupActive && (<AddAttendeePopup setPopup={setPopupActive} eventId={eventId} />)}
+            {popupActive && (<AddAttendeePopup setPopup={setPopupActive} eventId={eventId} fetchAttendees={fetchAttendees} />)}
         </div>
     )
 }
