@@ -3,33 +3,32 @@ import React, { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { toast } from "react-toastify";
 
-const WeddingInvite = ({inviteid}) => {
+const WeddingInvite = ({invite}) => {
 
-    const [invite, setInvite] = useState({})
+    // const [invite, setInvite] = useState({})
 
-    async function fetchInvite() {
-        const result = await fetch("/api/getinvitedetails", {
-            method : 'POST',
-            headers : {
-                'Content-Type' : 'application/json'
-            },
-            body : JSON.stringify({inviteid : inviteid })
-        });
-        if(result.ok) {
-            const res = await result.json();
-            if(res.success) {
-                setInvite(res.invite);
-                console.log(res.invite)
-            }
-            else {
-                toast.error(res.error);
-            }
-        }
-    }
+    // async function fetchInvite() {
+    //     const result = await fetch("/api/getinvitedetails", {
+    //         method : 'POST',
+    //         headers : {
+    //             'Content-Type' : 'application/json'
+    //         },
+    //         body : JSON.stringify({inviteid : inviteid })
+    //     });
+    //     if(result.ok) {
+    //         const res = await result.json();
+    //         if(res.success) {
+    //             setInvite(res.invite);
+    //         }
+    //         else {
+    //             toast.error(res.error);
+    //         }
+    //     }
+    // }
 
-    useEffect(() => {
-      fetchInvite();
-    }, [])
+    // useEffect(() => {
+    //   fetchInvite();
+    // }, [])
 
     function formatTextDate(dateString) {
         const date = new Date(dateString);
@@ -177,7 +176,7 @@ const WeddingInvite = ({inviteid}) => {
 
                 {/* Bottom Swirl Decoration */}
                 <div className="relative z-10 flex justify-center">
-                    <div className="absolute -bottom-6 w-48 h-12 md:w-64 md:h-16">
+                    <div className="absolute -bottom-12 w-48 h-12 md:w-64 md:h-16">
                         <svg className="w-full h-full text-teal-500 opacity-80 rotate-180" viewBox="0 0 100 20">
                             <path d="M5 10 C15 0, 35 0, 45 10 S65 20, 75 10 C85 0, 95 0, 105 10" fill="none" stroke="currentColor" strokeWidth="2" />
                             <path d="M47 8.5 C49 6.5, 51 6.5, 53 8.5 L50 12 L47 8.5 Z" fill="currentColor" />
