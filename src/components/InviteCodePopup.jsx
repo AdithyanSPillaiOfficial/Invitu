@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 function InviteCodePopup({ togglePopup, inviteId }) {
     // Use state to manage the button text and the URL
     const [buttonText, setButtonText] = useState('Copy');
-    const urlToCopy = "https://"+document.location.host+"/invite/"+inviteId;
+    const urlToCopy = document.location.origin + "/invite/" + inviteId;
 
     // Use a ref to access the text field element for copying
     const urlRef = useRef(null);
@@ -38,18 +38,18 @@ function InviteCodePopup({ togglePopup, inviteId }) {
     };
 
     return (
-        <div>
+        <div className='box-border'>
             <Popup title={"Share Invite"} togglePopup={togglePopup}>
                 <div className="w-full">
                     {/* Title */}
                     <br />
 
                     {/* URL Display and Copy Button Container */}
-                    <div className="flex items-center space-x-2 bg-teal-50 dark:bg-gray-700 p-2 rounded-lg border-2 border-teal-500">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 space-y-2 sm:space-y-0 bg-teal-50 dark:bg-gray-700 p-3 border border-teal-500 rounded-md">
                         {/* URL text display */}
                         <div
                             ref={urlRef}
-                            className="flex-grow font-mono text-gray-700 dark:text-gray-200 text-sm md:text-base overflow-hidden whitespace-nowrap overflow-ellipsis"
+                            className="w-full sm:flex-grow font-mono text-gray-700 dark:text-gray-200 text-sm md:text-base break-words"
                         >
                             {urlToCopy}
                         </div>
@@ -57,7 +57,7 @@ function InviteCodePopup({ togglePopup, inviteId }) {
                         {/* Copy Button */}
                         <button
                             onClick={handleCopy}
-                            className="px-4 py-2 bg-teal-500 text-white font-semibold rounded-md shadow-md hover:bg-teal-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50"
+                            className="w-full sm:w-auto px-4 py-2 bg-teal-500 text-white font-semibold rounded-md shadow-md hover:bg-teal-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50"
                         >
                             {buttonText}
                         </button>

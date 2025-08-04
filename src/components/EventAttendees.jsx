@@ -83,7 +83,7 @@ function EventAttendees({ eventId }) {
 
     return (
         // <!-- Main Container -->
-        <div className="bg-white mt-5 w-full h-full p-6 sm:p-10 space-y-8">
+        <div className="bg-white mt-5 w-full h-full p-6 pb-50 md:pb-40 sm:p-10 space-y-8 overflow-scroll">
 
             {/* <!-- Header and Add Attendee Button --> */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
