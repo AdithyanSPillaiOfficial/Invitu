@@ -5,7 +5,7 @@ function page({params}) {
     params = use(params);
   return (
     <div>
-        <WeddingInvite />
+        <WeddingInvite inviteid={params.inviteid}/>
     </div>
   )
 }

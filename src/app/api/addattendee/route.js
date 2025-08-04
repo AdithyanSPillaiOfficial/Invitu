@@ -24,17 +24,19 @@ export async function POST(request) {
             })
         }
 
-        const event = await fetchObjectsByParams("events", { _id: new ObjectId(req.eventid), owner: user._id });
-        if (!(event && event.length == 1)) {
-            return NextResponse.json({
-                success: false,
-                rescode: 201,
-                error: "No Such event registered in your account"
-            })
-        }
+        // const event = await fetchObjectsByParams("events", { _id: new ObjectId(req.eventid), owner: user._id });
+        // if (!(event && event.length == 1)) {
+        //     return NextResponse.json({
+        //         success: false,
+        //         rescode: 201,
+        //         error: "No Such event registered in your account"
+        //     })
+        // }
 
-        const {attendees, ...modEvent} = event; 
-        const addedInvite = await addObject({eventid : req.eventid, attendee : req.attendee, event : modEvent}, "invites");
+        // const {attendees, ...modEvent} = event; 
+        // const addedInvite = await addObject({eventid : req.eventid, attendee : req.attendee, event : modEvent[0]}, "invites");
+                const addedInvite = await addObject({eventid : req.eventid, attendee : req.attendee}, "invites");
+
         if(!addedInvite) {
             return NextResponse.json({
                 success : false,
