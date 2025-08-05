@@ -1,4 +1,5 @@
 "use client";
+import HousewarmingInvite from '@/components/invites/HouseWarming';
 import WeddingInvite from '@/components/invites/WeddingInvite';
 import React, { use, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -32,7 +33,8 @@ function Page({ params }) {
 
   return (
     <div>
-      <WeddingInvite invite={invite} />
+      {(invite?.event?.type === "wedding" || invite?.event?.type === "engagement") && (<WeddingInvite invite={invite} />)}
+      {invite?.event?.type === "housewarming" && <HousewarmingInvite invite={invite} />}
     </div>
   );
 }
