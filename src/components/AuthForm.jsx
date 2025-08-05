@@ -9,8 +9,9 @@ import { toast } from 'react-toastify';
 const AuthForm = () => {
   const router = useRouter();
   const sessionId = Cookies.get('sessionid');
+  const user = Cookies.get('user')
   useEffect(() => {
-    if(sessionId) {
+    if(sessionId && user) {
       toast.info("You have already Logged in");
       router.replace('/dashboard');
     }    
