@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import InviteCodePopup from './InviteCodePopup';
+import EditAttendeePopup from './editpopups/EditAttendeePopup';
 
 function EventAttendees({ eventId }) {
     const [popupActive, setPopupActive] = useState(false);
@@ -12,6 +13,7 @@ function EventAttendees({ eventId }) {
     const [attendeesArr, setAttendeesArr] = useState([])
     const [searchString, setSearchString] = useState('');
     const [showInvite, setShowInvite] = useState({show : false, inviteid : ''});
+    const [showEditInvite, setShowEditInvite] = useState(null);
     const router = useRouter();
 
     function setUserImage(name) {
@@ -116,7 +118,7 @@ function EventAttendees({ eventId }) {
                         {/* <!-- Action Buttons --> */}
                         <div className="flex space-x-2">
                             {/* <!-- Edit Button --> */}
-                            <button className="p-2 text-gray-400 hover:text-teal-500 transition-colors duration-200 rounded-full hover:bg-gray-100" title="Edit">
+                            <button onClick={() => setShowEditInvite(attendee)} className="p-2 text-gray-400 hover:text-teal-500 transition-colors duration-200 rounded-full hover:bg-gray-100" title="Edit">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                 </svg>
@@ -145,6 +147,7 @@ function EventAttendees({ eventId }) {
             </div>
             {popupActive && (<AddAttendeePopup setPopup={setPopupActive} eventId={eventId} sucessCallback={successCallback} />)}
             {showInvite.show && (<InviteCodePopup togglePopup={(val) => setShowInvite({...showInvite, show : val})} inviteId={showInvite.inviteid}  />)}
+            {showEditInvite && (<EditAttendeePopup setPopup={setShowEditInvite} eventId={eventId} attendeeInfo={showEditInvite} sucessCallback={successCallback} />)}
         </div>
     )
 }
