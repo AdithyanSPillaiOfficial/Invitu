@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { useDashboardContext } from '@/contexts/DashboardContext';
+import EditEventPopup from './editpopups/EditEventPopup';
 
 
 function EventView({ eventid }) {
@@ -22,6 +23,7 @@ function EventView({ eventid }) {
         time: '',
         endtime: ''
     })
+    const [toggleEditPopup, setToggleEditPopup] = useState(false);
     const router = useRouter();
 
     function formatTextDate(dateString) {
@@ -147,7 +149,7 @@ function EventView({ eventid }) {
 
             {/* <!-- Buttons Section --> */}
             <section className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-                <button className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 ease-in-out transform hover:scale-105">
+                <button onClick={() => setToggleEditPopup(true)} className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 ease-in-out transform hover:scale-105">
                     Edit Event
                 </button>
                 <button className="bg-teal-600 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 ease-in-out transform hover:scale-105">
@@ -166,6 +168,8 @@ function EventView({ eventid }) {
                     We would be honored to have you join us on this special day as we begin our journey together.
                 </p>
             </section>
+            
+            {toggleEditPopup && (<EditEventPopup togglePopup={setToggleEditPopup} event={event} />)}
         </main>
     )
 }

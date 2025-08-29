@@ -40,7 +40,7 @@ function EditAttendeePopup({setPopup, eventId, attendeeInfo, sucessCallback}) {
     }
     return (
         <div>
-            <Popup title={"Add Attendee"} togglePopup={setPopup}>
+            <Popup title={"Edit Attendee"} togglePopup={setPopup}>
                 <div className="space-y-6">
                     <h2 className="text-3xl font-semibold text-center text-teal-700 mb-6">Add a charector to your story!</h2>
                     <p className="text-center text-gray-600 mb-4">Enter the attendee details given below.</p>

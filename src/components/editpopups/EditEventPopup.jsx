@@ -1,36 +1,43 @@
 import { useLoading } from '@/contexts/LoadingContext';
 import Popup from '@/widgets/Popup'
 import Cookies from 'js-cookie';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-function EditEventPopup({ togglePopup, setEvents }) {
+function EditEventPopup({ togglePopup, event }) {
   const {setLoading} = useLoading();
   const [eventDetails, setEventDetails] = useState({
-    title: '',
-    type: '',
-    bridename: '',
-    groomname: '',
-    location: '',
-    date: '',
-    housename: '',
-    otherevent: '',
-    time: '',
-    endtime : ''
+    title: event.title,
+    type: event.type,
+    bridename: event.bridename,
+    groomname: event.groomname,
+    location: event.location,
+    date: event.date,
+    housename: event.housename,
+    otherevent: event.otherevent,
+    time: event.time,
+    endtime : event.endtime
   });
+  // setEventDetails(event);
   const [enableEndtime, setEnableEndtime] = useState(false);
+
+  useEffect(() => {
+    eventDetails.endtime && setEnableEndtime(true)
+  }, [])
+  
 
   async function handleAddEvent(e) {
     e.preventDefault();
     setLoading(true);
-    const result = await fetch("/api/addevent", {
+    const result = await fetch("/api/updateevent", {
       method : "POST",
       headers : {
         'Content-Type' : 'application/json'
       },
       body : JSON.stringify({
         sessionid : Cookies.get("sessionid"),
-        event : eventDetails
+        event : eventDetails,
+        eventid : event._id
       })
     });
 
@@ -38,8 +45,7 @@ function EditEventPopup({ togglePopup, setEvents }) {
       const res = await result.json();
 
       if(res.success) {
-        setEvents(events => [...events, eventDetails]);
-        toast.success("Event Added Sucessfully");
+        toast.success("Event Edited Sucessfully");
         togglePopup(false);
       }
       else {
@@ -50,7 +56,7 @@ function EditEventPopup({ togglePopup, setEvents }) {
   }
   return (
     <div>
-      <Popup title="Add Event" togglePopup={togglePopup}>
+      <Popup title="Edit Event" togglePopup={togglePopup}>
         <div className="space-y-6">
           <h2 className="text-3xl font-semibold text-center text-teal-700 mb-6">Make a Story With Us!</h2>
           <p className="text-center text-gray-600 mb-4">Enter the details given below.</p>
@@ -141,7 +147,7 @@ function EditEventPopup({ togglePopup, setEvents }) {
             </div>
 
             <label class="inline-flex items-center me-5 cursor-pointer">
-              <input type="checkbox" value="" class="sr-only peer" onChange={(e) => setEnableEndtime(e.target.checked)} />
+              <input type="checkbox" checked = {enableEndtime ? true : false} class="sr-only peer" onChange={(e) => setEnableEndtime(e.target.checked)} />
                 <div class="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600 dark:peer-checked:bg-teal-600"></div>
                 <span class="ms-3 text-sm font-medium text-gray-900">Enable End Time</span>
             </label>
@@ -226,7 +232,7 @@ function EditEventPopup({ togglePopup, setEvents }) {
               type="submit"
               className="w-full py-3 bg-teal-600 text-white font-semibold rounded-lg shadow-md hover:bg-teal-700 focus:outline-none transition duration-300 ease-in-out transform hover:scale-105"
             >
-              Add Event
+              Edit Event
             </button>
           </form>
 
