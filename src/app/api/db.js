@@ -153,5 +153,17 @@ const updateDocumentObjectwithId = async (collectionName, documentId, updateObj)
     }
 }
 
+const deleteObjectWithQuery = async (collectionName, query) => {
+    const collection = db.collection(collectionName);
+    const result = await collection.deleteOne(query);
+
+    if(result.deletedCount > 0) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 // Export the functions for external usage
-module.exports = { addObject, fetchObjectsByParam, getAllObjects, getUserWithSession, updateDocumentwithId, fetchObjectsByParams, updateDocumentObjectwithId };
+module.exports = { addObject, fetchObjectsByParam, getAllObjects, getUserWithSession, updateDocumentwithId, fetchObjectsByParams, updateDocumentObjectwithId, deleteObjectWithQuery };

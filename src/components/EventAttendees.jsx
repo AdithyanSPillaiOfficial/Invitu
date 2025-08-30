@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import InviteCodePopup from './InviteCodePopup';
 import EditAttendeePopup from './editpopups/EditAttendeePopup';
+import ConfirmDelete from './ConfirmDelete';
 
 function EventAttendees({ eventId }) {
     const [popupActive, setPopupActive] = useState(false);
@@ -14,6 +15,7 @@ function EventAttendees({ eventId }) {
     const [searchString, setSearchString] = useState('');
     const [showInvite, setShowInvite] = useState({show : false, inviteid : ''});
     const [showEditInvite, setShowEditInvite] = useState(null);
+    const [showDeleteAttendee, setShowDeleteAttendee] = useState(false);
     const router = useRouter();
 
     function setUserImage(name) {
@@ -79,6 +81,41 @@ function EventAttendees({ eventId }) {
         setShowInvite({show : true, inviteid : inviteid})
     }
 
+    async function deleteAttendee(attendee) {
+        setShowDeleteAttendee(false);
+        const sessionId = Cookies.get("sessionid");
+        if (!sessionId) {
+            toast.warning("Please Login")
+            router.replace("/login")
+        }
+
+        const result = await fetch("/api/deleteattendee", {
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json'
+            },
+            body : JSON.stringify({
+                sessionid : sessionId,
+                eventid : eventId,
+                inviteid : attendee.inviteid
+            })
+        });
+
+        if(result.ok) {
+            const res = await result.json();
+            if(res.success) {
+                toast.success("Attendee deleted Successfully");
+                await fetchAttendees();
+            }
+            else {
+                toast.error(res.error);
+            }
+        }
+        else {
+            toast.error("Somthing went wrong");
+        }
+    }
+
     useEffect(() => {
         fetchAttendees();
     }, [])
@@ -132,7 +169,7 @@ function EventAttendees({ eventId }) {
                                 </svg>
                             </button>
                             {/* <!-- Delete Button --> */}
-                            <button className="p-2 text-gray-400 hover:text-red-500 transition-colors duration-200 rounded-full hover:bg-gray-100" title="Delete">
+                            <button onClick={() => setShowDeleteAttendee(attendee)} className="p-2 text-gray-400 hover:text-red-500 transition-colors duration-200 rounded-full hover:bg-gray-100" title="Delete">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="3 6 5 6 21 6"></polyline>
                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -148,6 +185,7 @@ function EventAttendees({ eventId }) {
             {popupActive && (<AddAttendeePopup setPopup={setPopupActive} eventId={eventId} sucessCallback={successCallback} />)}
             {showInvite.show && (<InviteCodePopup togglePopup={(val) => setShowInvite({...showInvite, show : val})} inviteId={showInvite.inviteid}  />)}
             {showEditInvite && (<EditAttendeePopup setPopup={setShowEditInvite} eventId={eventId} attendeeInfo={showEditInvite} sucessCallback={successCallback} />)}
+            {showDeleteAttendee && (<ConfirmDelete attendee={showDeleteAttendee} togglePopup={setShowDeleteAttendee} successCallback={() => deleteAttendee(showDeleteAttendee)} />)}
         </div>
     )
 }
