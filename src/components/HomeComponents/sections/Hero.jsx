@@ -105,7 +105,7 @@ export const Hero = () => {
                 >
                     <div className="flex flex-wrap gap-8 md:gap-12 items-center">
                         {/* Placeholders for logos: EkStep, Launchpad, FAYA:80, H Evolve, IEEE, Elevate, IN50HRS */}
-                        {['EkStep', 'Launchpad', 'FAYA:80', 'H Evolve', 'IEEE', 'Elevate', 'IN50HRS'].map((logo) => (
+                        {['Host', 'An', 'Event', 'In', 'IEEE', '<', '10min'].map((logo) => (
                             <span key={logo} className="text-xl md:text-2xl font-bold font-sans text-gray-400">{logo}</span>
                         ))}
                         {/* Replaced real SVGs with text placeholders for now as I don't have them yet. */}
