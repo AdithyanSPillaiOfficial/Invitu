@@ -1,6 +1,6 @@
 import AuthForm from '@/components/AuthForm'
 import Loading from '@/widgets/Loading'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 function page() {
   return (
