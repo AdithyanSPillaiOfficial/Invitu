@@ -2,7 +2,7 @@
 import { useLoading } from '@/contexts/LoadingContext';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -32,6 +32,14 @@ const AuthForm = () => {
     password : '',
     confirmpassword : ''
   });
+
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    if(searchParams.get("signup")){
+      setShowLogin(false);
+    }    
+    
+  }, [])
 
   const handleToggle = () => {
     setShowLogin(!showLogin);

@@ -7,11 +7,21 @@
   --foreground: #006666;
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --font-display: var(--font-plus-jakarta);
+  --font-sans: var(--font-plus-jakarta);
+  --color-brand-green: #00D26A;
+  --color-highlight-green: #327554;
+  --color-dark-bg: #000000;
+  --color-light-bg: #FFFFFF;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -27,6 +37,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 .custom-toast {
   background-color: #006666 !important;
   color: white !important;
@@ -36,4 +50,43 @@ body {
 .custom-toast-body {
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
+}
+
+/* --- Custom Scrollbar --- */
+
+/* Width */
+::-webkit-scrollbar {
+  width: 15px;
+}
+
+/* Track (Background) */
+::-webkit-scrollbar-track {
+  background: white;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: black;
+}
+
+/* Thumb (Handle) - Light Mode Default */
+::-webkit-scrollbar-thumb {
+  background-color: #327554; /* Light gray for light mode */
+  border-radius: 9999px;
+  border: 2px solid transparent; /* Creates padding around the thumb */
+  background-clip: content-box;
+  transition: background-color 0.2s;
+}
+
+/* Thumb Hover - Light Mode */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8; /* Slightly darker gray on hover */
+}
+
+/* Dark Mode Overrides */
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #333333; /* Dark gray for dark mode */
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #555555; /* Lighter gray on hover in dark mode */
 }

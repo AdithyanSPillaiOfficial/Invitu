@@ -35,6 +35,7 @@ function Page({ params }) {
     <div>
       {(invite?.event?.type === "wedding" || invite?.event?.type === "engagement") && (<WeddingInvite invite={invite} />)}
       {invite?.event?.type === "housewarming" && <HousewarmingInvite invite={invite} />}
+      {invite?.event?.type === "others" && <HousewarmingInvite invite={invite} />}
     </div>
   );
 }
