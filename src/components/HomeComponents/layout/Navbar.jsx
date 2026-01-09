@@ -145,8 +145,8 @@ export const Navbar = () => {
                     </div>
 
                     <div className="flex flex-col gap-2 mt-2">
-                        <Button variant="ghost" className="justify-start text-gray-900 dark:text-white">Log In</Button>
-                        <Button variant="primary" className="justify-center">Join Now</Button>
+                        <Button variant="ghost" className="justify-start text-gray-900 dark:text-white" onClick = {() => router.push("/login")}>Log In</Button>
+                        <Button variant="primary" className="justify-center" onClick = {() => router.push("/login?signup=true")}>Join Now</Button>
                     </div>
                 </div>
             )}
