@@ -19,6 +19,7 @@ function EventView({ eventid }) {
         location: '',
         date: '',
         housename: '',
+        birthdayperson: '',
         otherevent: '',
         time: '',
         endtime: ''
@@ -110,10 +111,17 @@ function EventView({ eventid }) {
                     {event.type.charAt(0).toUpperCase() + event.type.slice(1)} Ceremony
                 </p>
                 <p className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mt-6">
-                    <span className="text-teal-600">{event.groomname}</span> <span className='text-teal-700'> ❤︎ </span> <span className="text-teal-600">{event.bridename}</span>
+                    {/* <span className="text-teal-600">{event.groomname}</span> <span className='text-teal-700'> ❤︎ </span> <span className="text-teal-600">{event.bridename}</span> */}
+                    {(event?.type === "wedding" || event.type === "engagement") && ( <div><span className="text-teal-600">{event.groomname}</span> <span className='text-teal-700'> ❤︎ </span> <span className="text-teal-600">{event.bridename}</span></div> )}
+                    {event?.type === "housewarming" && ( <div><span className="text-teal-600">{event.housename}</span></div> )}
+                    {event?.type === "birthday" && ( <div><span className="text-teal-600">{event.birthdayperson}</span></div>)}
+                    {event?.type === "other" && ( <div><span className="text-teal-600">{event.otherevent}</span></div> )}
                 </p>
                 <p className="text-lg sm:text-xl text-gray-600 mt-2">
-                    Bride & Groom
+                    {(event?.type === "wedding" || event.type === "engagement") && "Bride & Groom"}
+                    {event?.type === "housewarming" && "House Name"}
+                    {event?.type === "birthday" && "Birthday Star"}
+                    {event?.type === "other" && "Event Name"}
                 </p>
             </section>
 
