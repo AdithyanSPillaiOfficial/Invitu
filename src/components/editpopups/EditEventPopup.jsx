@@ -14,6 +14,7 @@ function EditEventPopup({ togglePopup, event }) {
     location: event.location,
     date: event.date,
     housename: event.housename,
+    birthdayperson: event.birthdayperson,
     otherevent: event.otherevent,
     time: event.time,
     endtime : event.endtime
@@ -83,6 +84,7 @@ function EditEventPopup({ togglePopup, event }) {
                 <option value="wedding">Wedding</option>
                 <option value="engagement">Engagement</option>
                 <option value="housewarming">House Warming</option>
+                <option value="birthday">Birthday</option>
                 <option value="others">Others</option>
               </select>
             </div>
@@ -203,6 +205,24 @@ function EditEventPopup({ togglePopup, event }) {
                     required
                     value={eventDetails.housename}
                     onChange={(e) => setEventDetails({ ...eventDetails, housename: e.target.value })}
+                  />
+                </div>
+              )
+            }
+
+            {
+              eventDetails.type === "birthday" && (
+                <div>
+                  <label htmlFor="event-birthday" className="block text-sm font-medium text-gray-700 mb-1">May we know the name of the one we’re celebrating?</label>
+                  <input
+                    type="text"
+                    id="event-birthday"
+                    name="housename"
+                    placeholder="Name of the legend"
+                    className="w-full px-4 py-2 border text-black outline-teal-600 border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition duration-200 ease-in-out"
+                    required
+                    value={eventDetails.birthdayperson}
+                    onChange={(e) => setEventDetails({ ...eventDetails, birthdayperson: e.target.value })}
                   />
                 </div>
               )
