@@ -14,6 +14,25 @@ const client = new MongoClient(uri);
 
 let db; // This will hold the connection to the database
 
+
+async function starterMiddleware() {
+    const users = db.collection("users");
+    await users.createIndex(
+        { email: 1 },
+        {
+            unique: true,
+            collation: { locale: "en", strength: 2 }
+        }
+    );
+    await users.createIndex(
+        { username: 1 },
+        {
+            unique: true,
+            collation: { locale: "en", strength: 2 }
+        }
+    );
+}
+
 // Helper function to connect to the database
 const connectToDatabase = async () => {
     try {
@@ -21,6 +40,7 @@ const connectToDatabase = async () => {
             await client.connect();
             db = client.db(dbName);
             console.log('Connected to database successfully');
+            await starterMiddleware();
         }
     } catch (err) {
         console.error('Database connection failed:', err);
@@ -37,6 +57,7 @@ const addObject = async (newObject, collectionName) => {
         return result.insertedId; // Return the ObjectId of the inserted document
     } catch (err) {
         console.error('Failed to add object:', err);
+        if(err.code === 11000) return {ecode : 11000}
         return null; // Return null in case of an error
     }
 };
@@ -86,14 +107,14 @@ const getUserWithSession = async (sessionId) => {
         //const user = fetchObjectsByParam("_id", sessionId, "sessions");
         await connectToDatabase();
         const collection = db.collection("sessions");
-        const filteredObjects = await collection.find({ _id : new ObjectId(sessionId) }).toArray();
+        const filteredObjects = await collection.find({ _id: new ObjectId(sessionId) }).toArray();
         const userCollection = db.collection("users");
-        const user = await userCollection.find({_id : new ObjectId(filteredObjects[0].id)}).toArray();
+        const user = await userCollection.find({ _id: new ObjectId(filteredObjects[0].id) }).toArray();
         delete user[0].password
         return user[0];
     } catch (error) {
         console.log(error);
-        return false;     
+        return false;
     }
 }
 
@@ -104,17 +125,17 @@ const updateDocumentwithId = async (collectionName, documentId, parameter, value
 
         await connectToDatabase();
         const collection = db.collection(collectionName);
-        const update = { 
+        const update = {
             $set: {
-                [parameter]: value,  
-            } 
+                [parameter]: value,
+            }
         }; // Replace with your update data
-        
+
         const filter = { _id: new ObjectId(documentId) };
 
         const result = await collection.updateOne(filter, update);
         console.log(result);
-        if(result.modifiedCount > 0) {
+        if (result.modifiedCount > 0) {
             return true;
         }
         else {
@@ -133,15 +154,15 @@ const updateDocumentObjectwithId = async (collectionName, documentId, updateObj)
 
         await connectToDatabase();
         const collection = db.collection(collectionName);
-        const update = { 
+        const update = {
             $set: updateObj
         }; // Replace with your update data
-        
+
         const filter = { _id: new ObjectId(documentId) };
 
         const result = await collection.updateOne(filter, update);
         console.log(result);
-        if(result.modifiedCount > 0) {
+        if (result.modifiedCount > 0) {
             return true;
         }
         else {
@@ -157,7 +178,7 @@ const deleteObjectWithQuery = async (collectionName, query) => {
     const collection = db.collection(collectionName);
     const result = await collection.deleteOne(query);
 
-    if(result.deletedCount > 0) {
+    if (result.deletedCount > 0) {
         return true;
     }
     else {

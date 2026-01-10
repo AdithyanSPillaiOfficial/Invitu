@@ -13,11 +13,25 @@ export async function POST(request) {
                 error : "Username already exists"
             })
         }
-        const userId = await addObject(req, "users")
-        return NextResponse.json({
-            sucess : true,
-            userId : userId
+        const userId = await addObject(req, "users");
+        console.log("Userid : ", userId)
+        if(userId?.ecode && userId?.ecode === 11000) {
+            return NextResponse.json({
+            sucess : false,
+            error : "An Account with same username or email already exist"
         })
+        }
+        else if (userId){
+            return NextResponse.json({
+                sucess : true,
+                userId : userId
+            })
+        }
+        else return NextResponse.json({
+            sucess : false,
+            error : e
+        })
+    
     } catch(e) {
         console.error(e);
         return NextResponse.json({

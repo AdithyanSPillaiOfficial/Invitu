@@ -103,6 +103,7 @@ const AuthForm = () => {
         setShowLogin(true);
       }
       else {
+        if (typeof(res.error) == 'string') toast.error(res.error);
         toast.error("Failed to register user");
       }
     }
