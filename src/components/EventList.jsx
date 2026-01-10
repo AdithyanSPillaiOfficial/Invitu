@@ -6,38 +6,8 @@ import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import { useDashboardContext } from '@/contexts/DashboardContext';
 
-const stats = [
-  {
-    title: 'Total Events', value: 128, icon: (
-      <svg className="w-10 h-10 text-teal-400 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-    )
-  },
-  {
-    title: 'Upcoming Week', value: 6, icon: (
-      <svg className="w-10 h-10 text-teal-400 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    )
-  },
-  {
-    title: 'Attendees', value: '2,450', icon: (
-      <svg className="w-10 h-10 text-teal-400 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857..." />
-      </svg>
-    )
-  },
-  {
-    title: 'New Registrations', value: 52, icon: (
-      <svg className="w-10 h-10 text-teal-400 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3..." />
-      </svg>
-    )
-  }
-];
 
-const EventList = () => {
+const EventList = ({title}) => {
 
   const [addEventOpen, setAddEventOpen] = useState(false);
 
@@ -108,27 +78,12 @@ const EventList = () => {
   }, [])
 
 
-  const { setTitle } = useDashboardContext();
-  setTitle("Dashboard Overview");
-
   return (
     <main className="flex-grow p-4 md:p-6 h-full overflow-y-auto max-h-full box-border pb-20">
-      {/* Stats Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
-        {stats.map((stat, index) => (
-          <div key={index} className="bg-white p-5 rounded-xl shadow-md flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500 font-medium">{stat.title}</p>
-              <p className="text-3xl font-bold text-teal-700 mt-1">{stat.value}</p>
-            </div>
-            {stat.icon}
-          </div>
-        ))}
-      </div>
 
       {/* Events Section Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Recent Events</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">{title ? title : "Events"}</h2>
         <button id="addEventBtn" onClick={() => setAddEventOpen(true)} className="bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white font-bold py-3 px-6 rounded-full shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 focus:outline-none focus:ring-4 focus:ring-teal-300 w-full sm:w-auto justify-center">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
