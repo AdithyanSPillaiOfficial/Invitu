@@ -13,7 +13,7 @@ function DashboardLayout({ children }) {
   const sessionId = Cookies.get("sessionid");
   const user = Cookies.get('user');
   useEffect(() => {
-    if (!(sessionId || user)) {
+    if (!sessionId || !user) {
       toast.warning("Please Login")
       router.replace("/login")
     }
@@ -21,7 +21,7 @@ function DashboardLayout({ children }) {
 
   return (
     <div className='w-screen h-screen flex flex-row bg-teal-50 overflow-hidden'>
-      {sessionId && (<>
+      {(sessionId && user) && (<>
         <DashboardProvider>
           <Sidebar isOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           <div className='w-full h-full flex flex-col'>

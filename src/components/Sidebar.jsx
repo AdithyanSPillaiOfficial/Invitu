@@ -55,12 +55,12 @@ function Sidebar({isOpen, setSidebarOpen}) {
                                 All Events
                             </a>
                         </li>
-                        <li className="mb-4">
+                        <li className="mb-4" onClick={() => router.push("/dashboard/checkin")}>
                             <a href="#" className="flex items-center p-3 rounded-lg text-teal-100 hover:bg-teal-700 hover:text-white transition duration-200">
                                 <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.146-1.28-.426-1.849m0 0l-7.402-1.85A2 2 0 007 15.397V11.5c0-.181.02-.362.06-.534m0 0C6.516 10.328 6 9.776 6 9V6a2 2 0 012-2h8a2 2 0 012 2v3c0 .776-.516 1.328-1.06 1.597M18 20h-3.356C14.28 20 13.653 19.854 13.084 19.574m0 0L7.602 17.151M2.685 10.198A2.25 2.25 0 013 9.5V6a2 2 0 012-2h8a2 2 0 012 2v3c0 .776-.516 1.328-1.06 1.597m-2.585 4.398a2.25 2.25 0 00-.685-.198H2.685z" />
                                 </svg>
-                                Attendees
+                                Checkin
                             </a>
                         </li>
                     </ul>
