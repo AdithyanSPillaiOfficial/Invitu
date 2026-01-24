@@ -43,7 +43,19 @@ export async function POST(request) {
             })
         }
 
-        const update = await updateDocumentObjectwithId("events", new ObjectId(req.eventid), req.event);
+        let eventData = req.event;
+        if (typeof eventData !== 'object' || eventData === null) {
+             return NextResponse.json({
+                success: false,
+                rescode: 0,
+                error: "Invalid Event Data"
+            })
+        }
+
+        // Sanitize: prevent modifying critical fields
+        const { _id, owner, attendees, ...safeEventData } = eventData;
+
+        const update = await updateDocumentObjectwithId("events", new ObjectId(req.eventid), safeEventData);
         if (update) {
             return NextResponse.json({
                 success: true

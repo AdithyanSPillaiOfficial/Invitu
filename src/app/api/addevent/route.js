@@ -24,7 +24,19 @@ export async function POST(request) {
             })
         }
 
-        const eventId = await addObject({...req.event, owner : user._id}, "events");
+        let eventData = req.event;
+        if (typeof eventData !== 'object' || eventData === null) {
+             return NextResponse.json({
+                success: false,
+                rescode: 0,
+                error: "Invalid Event Data"
+            })
+        }
+
+        // Sanitize: remove _id and force owner
+        const { _id, owner, ...safeEventData } = eventData;
+
+        const eventId = await addObject({...safeEventData, owner : user._id}, "events");
         if (eventId) {
             return NextResponse.json({
                 success: true,
