@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { addObject, fetchObjectsByParams, getUserWithSession, updateDocumentObjectwithId, updateDocumentwithId } from "../db";
+import { addObject, fetchObjectsByParams, getUserWithSession, updateDocumentObjectwithId, updateDocumentwithId, pushToDocumentArray } from "../db";
 import { ObjectId } from "mongodb";
 
 export async function POST(request) {
@@ -47,11 +47,11 @@ export async function POST(request) {
 
         // const updatedEvent = await updateDocumentwithId("events", req.eventid, "attendees", [...event[0].attendees, req.attendee] );
         req.attendee.inviteid = addedInvite;
-        const updatedEvent = await updateDocumentwithId(
+        const updatedEvent = await pushToDocumentArray(
             "events",
             req.eventid,
             "attendees",
-            [...(event[0]?.attendees || []), req.attendee]
+            req.attendee
         );
 
         // const updatedEvent = await updateDocumentObjectwithId(

@@ -108,8 +108,10 @@ const getUserWithSession = async (sessionId) => {
         await connectToDatabase();
         const collection = db.collection("sessions");
         const filteredObjects = await collection.find({ _id: new ObjectId(sessionId) }).toArray();
+        if (filteredObjects.length === 0) return false;
         const userCollection = db.collection("users");
         const user = await userCollection.find({ _id: new ObjectId(filteredObjects[0].id) }).toArray();
+        if (user.length === 0) return false;
         delete user[0].password
         return user[0];
     } catch (error) {
@@ -175,6 +177,7 @@ const updateDocumentObjectwithId = async (collectionName, documentId, updateObj)
 }
 
 const deleteObjectWithQuery = async (collectionName, query) => {
+    await connectToDatabase();
     const collection = db.collection(collectionName);
     const result = await collection.deleteOne(query);
 
@@ -186,5 +189,43 @@ const deleteObjectWithQuery = async (collectionName, query) => {
     }
 }
 
+const pullFromDocumentArray = async (collectionName, documentId, arrayField, condition) => {
+    try {
+        await connectToDatabase();
+        const collection = db.collection(collectionName);
+        const update = {
+            $pull: {
+                [arrayField]: condition
+            }
+        };
+        const filter = { _id: new ObjectId(documentId) };
+        const result = await collection.updateOne(filter, update);
+        if (result.modifiedCount > 0) return true;
+        return false;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
+const pushToDocumentArray = async (collectionName, documentId, arrayField, item) => {
+    try {
+        await connectToDatabase();
+        const collection = db.collection(collectionName);
+        const update = {
+            $push: {
+                [arrayField]: item
+            }
+        };
+        const filter = { _id: new ObjectId(documentId) };
+        const result = await collection.updateOne(filter, update);
+        if (result.modifiedCount > 0) return true;
+        return false;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
 // Export the functions for external usage
-module.exports = { addObject, fetchObjectsByParam, getAllObjects, getUserWithSession, updateDocumentwithId, fetchObjectsByParams, updateDocumentObjectwithId, deleteObjectWithQuery };
+module.exports = { addObject, fetchObjectsByParam, getAllObjects, getUserWithSession, updateDocumentwithId, fetchObjectsByParams, updateDocumentObjectwithId, deleteObjectWithQuery, pullFromDocumentArray, pushToDocumentArray };

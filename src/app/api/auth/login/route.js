@@ -7,7 +7,7 @@ export async function POST(request) {
     try {
         const user = await fetchObjectsByParam("email", req.email, "users");
 
-        if (user.length == 1 && bcrypt.compare(user[0].password, req.password)) {
+        if (user.length == 1 && await bcrypt.compare(req.password, user[0].password)) {
             delete user[0].password
             user[0].id = user[0]._id
             delete user[0]._id

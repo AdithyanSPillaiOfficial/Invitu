@@ -1,35 +1,6 @@
-import { deleteObjectWithQuery, fetchObjectsByParams, getUserWithSession } from "../db";
+import { deleteObjectWithQuery, fetchObjectsByParams, getUserWithSession, pullFromDocumentArray } from "../db";
 import { NextResponse } from "next/server";
-
-
-const { MongoClient, ObjectId } = require('mongodb');
-require('dotenv').config();
-
-
-// Connection URL and Database Name
-const username = encodeURIComponent(process.env.DB_UNAME);
-const password = encodeURIComponent(process.env.DB_PASSWORD);
-const uri = `mongodb+srv://${username}:${password}@cluster0.kf2qhwd.mongodb.net/?retryWrites=true&w=majority`; // Update with your MongoDB URI if hosted remotely
-const dbName = 'Invitu'; // Update with your desired database name
-const collectionName = 'users'; // Update with your desired collection name
-
-// Initialize MongoDB client
-const client = new MongoClient(uri);
-
-let db; // This will hold the connection to the database
-
-// Helper function to connect to the database
-const connectToDatabase = async () => {
-    try {
-        if (!db) {
-            await client.connect();
-            db = client.db(dbName);
-            console.log('Connected to database successfully');
-        }
-    } catch (err) {
-        console.error('Database connection failed:', err);
-    }
-};
+import { ObjectId } from "mongodb";
 
 export async function POST(request) {
     const req = await request.json();
@@ -62,17 +33,33 @@ export async function POST(request) {
             })
         }
 
+        const invite = await fetchObjectsByParams("invites", { _id: new ObjectId(req.inviteid) });
+        if (invite.length === 0) {
+            return NextResponse.json({
+                success: false,
+                rescode: 303,
+                error: "Invite not found"
+            })
+        }
+
+        if (invite[0].eventid !== req.eventid) {
+            return NextResponse.json({
+                success: false,
+                rescode: 304,
+                error: "Invite does not belong to this event"
+            })
+        }
+
         const deleteStatus = await deleteObjectWithQuery("invites", { _id: new ObjectId(req.inviteid) });
 
-        await connectToDatabase()
-        const updateStatus = await db.collection("events").updateOne(
-            { _id: new ObjectId(req.eventid) },
-            { $pull: { attendees: { inviteid: new ObjectId(req.inviteid) } } }
-        )
+        const updateStatus = await pullFromDocumentArray(
+            "events",
+            new ObjectId(req.eventid),
+            "attendees",
+            { inviteid: new ObjectId(req.inviteid) }
+        );
 
-        console.log(updateStatus)
-
-        if(deleteStatus && updateStatus.modifiedCount > 0) {
+        if(deleteStatus && updateStatus) {
             return NextResponse.json({
                 success : true,
                 rescode : 100
@@ -86,8 +73,6 @@ export async function POST(request) {
                 error : "Error while deleting the invite"
             });
         }
-
-
 
     } catch (e) {
         console.log(e);
