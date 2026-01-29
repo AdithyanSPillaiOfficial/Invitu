@@ -9,8 +9,10 @@ function CheckinWindow({ eventId }) {
     const [activeMode, setActiveMode] = useState('qr');
     const [searchQuery, setSearchQuery] = useState('');
     const [recentCheckIn, setRecentCheckIn] = useState(null);
+    const [checkinWarning, setCheckinWarning] = useState(null);
 
     const [guests, setGuests] = useState([]);
+    const [eventTitle, setEventTitle] = useState("Invitu")
 
     async function fetchAttendees() {
         const result = await fetch('/api/getattendees', {
@@ -29,8 +31,10 @@ function CheckinWindow({ eventId }) {
             if (res.success) {
                 res.attendees.forEach((obj, index) => {
                     obj.id = index + 1;
+                    obj.status ? null : obj.status = "Pending";
                 });
                 setGuests(res.attendees);
+                setEventTitle(res.eventtitle);
             }
             else {
                 toast.error(res.error);
@@ -51,23 +55,77 @@ function CheckinWindow({ eventId }) {
         pending: guests?.filter(g => g.status === 'Pending').length
     };
 
-    const handleCheckIn = (guestId) => {
-        const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const updatedGuests = guests.map(g => {
-            if (g.id === guestId) {
-                const updated = { ...g, status: "Checked In", time: timestamp };
-                setRecentCheckIn(updated);
-                return updated;
-            }
-            return g;
+    const handleCheckIn = async (guestId) => {
+        const timestamp = new Date().toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
         });
-        setGuests(updatedGuests);
 
+        // 1️⃣ Find scanned guest FIRST
+        const guest = guests.find(g => g.id === guestId);
+        if (!guest) return;
+
+        // 2️⃣ Prevent toast spam for same recent scan
+        if (recentCheckIn?.inviteid === guest.inviteid) return;
+        if (checkinWarning?.inviteid === guest.inviteid) return;
+
+        // 3️⃣ Already checked in → ONE toast only
+        if (guest.status === "Checked In") {
+            toast.error("User Already Checked In");
+            setCheckinWarning(guest);
+
+            setTimeout(() => setCheckinWarning(null), 3000);
+            return;
+        }
+
+        // 4️⃣ Call backend ONLY once
+        try {
+            const result = await fetch('/api/markcheckin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sessionid: Cookies.get('sessionid'),
+                    eventid: eventId,
+                    inviteid: guest.inviteid
+                })
+            });
+
+            if (!result.ok) {
+                toast.error("Something went wrong");
+                return;
+            }
+
+            const res = await result.json();
+
+            if (!res.success) {
+                toast.error(res.error || "Check-in failed");
+                return;
+            }
+
+            // 5️⃣ Update state ONCE
+            const updatedGuest = {
+                ...guest,
+                status: "Checked In",
+                time: timestamp
+            };
+
+            setGuests(prev =>
+                prev.map(g => (g.id === guestId ? updatedGuest : g))
+            );
+
+            setRecentCheckIn(updatedGuest);
+
+        } catch (err) {
+            toast.error("Network error");
+        }
+
+        // 6️⃣ Reset visual state
         setTimeout(() => {
             setRecentCheckIn(null);
             setSearchQuery('');
         }, 3000);
     };
+
 
     // --- NEW SCAN LOGIC ---
     const handleScan = (detectedCodes) => {
@@ -77,9 +135,16 @@ function CheckinWindow({ eventId }) {
 
             // LOGIC: For demo purposes, any QR code will randomly check in a pending guest.
             // In a real app, you would use `rawValue` to find the specific guest.
-            const pendingGuest = guests.find(g => g.status === "Pending");
-            if (pendingGuest && !recentCheckIn) {
-                handleCheckIn(pendingGuest.id);
+            let scannedGuest = guests.find(g => g.inviteid == rawValue);
+            if (scannedGuest && !recentCheckIn) {
+                handleCheckIn(scannedGuest.id);
+            }
+            else {
+                fetchAttendees();
+                scannedGuest = guests.find(g => g.inviteid == rawValue);
+                if (scannedGuest && !recentCheckIn) {
+                    handleCheckIn(scannedGuest.id);
+                }
             }
         }
     };
@@ -106,6 +171,9 @@ function CheckinWindow({ eventId }) {
         ),
         Camera: ({ size = 20, className }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /><circle cx="12" cy="13" r="3" /></svg>
+        ),
+        Warning: ({ size = 20, className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 5.177l8.631 15.823h-17.262l8.631-15.823zm0-4.177l-12 22h24l-12-22zm-1 9h2v6h-2v-6zm1 9.75c-.689 0-1.25-.56-1.25-1.25s.561-1.25 1.25-1.25 1.25.56 1.25 1.25-.561 1.25-1.25 1.25z" /></svg>
         )
     };
 
@@ -125,8 +193,8 @@ function CheckinWindow({ eventId }) {
                             <Icons.Grid size={20} className="text-teal-100" />
                         </div>
                         <div>
-                            <h1 className="text-lg md:text-xl font-bold tracking-wide">EventDesk</h1>
-                            <p className="text-teal-200 text-xs md:text-sm md:block hidden">Session: Morning Keynote</p>
+                            <h1 className="text-lg md:text-xl font-bold tracking-wide">Checkin Desk</h1>
+                            <p className="text-teal-200 text-xs md:text-sm md:block hidden">Event: {eventTitle}</p>
                         </div>
                     </div>
                     <div className="md:hidden text-right">
@@ -184,6 +252,17 @@ function CheckinWindow({ eventId }) {
                         </div>
                     )}
 
+                    {/* Already checked in Overlay */}
+                    {checkinWarning && (
+                        <div className="absolute inset-0 z-50 bg-red-600 flex flex-col items-center justify-center text-center p-6 animate-in fade-in zoom-in duration-300">
+                            <div className="bg-white p-3 md:p-4 rounded-full mb-2 md:mb-4 shadow-lg animate-bounce">
+                                <Icons.Warning size={32} className="text-red-600" />
+                            </div>
+                            <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Already Checked In</h2>
+                            <p className="text-teal-100 text-base md:text-lg font-medium">{checkinWarning.name}</p>
+                        </div>
+                    )}
+
                     {/* QR View */}
                     {activeMode === 'qr' && (
                         // UPDATE: Added 'min-h-[300px]' to force visibility on mobile
@@ -192,15 +271,14 @@ function CheckinWindow({ eventId }) {
                                 <Scanner
                                     onScan={handleScan}
                                     components={{
-                                        audio: false,
-                                        tracker: false
+                                        audio: true
                                     }}
-                                    // UPDATE: Ensure video object covers the whole area
                                     styles={{
                                         container: { width: '100%', height: '100%' },
                                         video: { width: '100%', height: '100%', objectFit: 'cover' }
                                     }}
                                 />
+
                             </div>
 
                             {/* Custom Overlay (Grid Lines) */}
@@ -256,35 +334,35 @@ function CheckinWindow({ eventId }) {
                 <div className="flex-1 overflow-y-auto custom-scrollbar p-2 md:p-4 space-y-1 pb-20 md:pb-4">
                     {guests
                         ?.filter(g => g.name.toLowerCase().includes(searchQuery.toLowerCase()))
-                            .map((guest) => (
-                                <div key={guest.id} className={`grid grid-cols-12 items-center p-3 md:p-4 rounded-xl transition-all duration-200 border ${guest.status === 'Checked In' ? 'bg-teal-50/30 border-teal-100/50' : 'bg-white border-transparent hover:border-slate-100 hover:shadow-sm'}`}>
-                                    <div className="col-span-8 md:col-span-5 flex items-center gap-2 md:gap-3">
-                                        <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-xs md:text-sm font-bold shadow-sm flex-shrink-0 ${guest.status === 'Checked In' ? 'bg-teal-100 text-teal-700' : 'bg-slate-100 text-slate-500'}`}>
-                                            {guest.name.charAt(0)}
-                                        </div>
-                                        <div className="truncate pr-2">
-                                            <h4 className={`font-semibold text-sm truncate ${guest.status === 'Checked In' ? 'text-teal-900' : 'text-slate-700'}`}>{guest.name}</h4>
-                                            <p className="text-[10px] text-slate-400 md:hidden flex items-center gap-1">{guest.role}</p>
-                                        </div>
+                        .map((guest) => (
+                            <div key={guest.id} className={`grid grid-cols-12 items-center p-3 md:p-4 rounded-xl transition-all duration-200 border ${guest.status === 'Checked In' ? 'bg-teal-50/30 border-teal-100/50' : 'bg-white border-transparent hover:border-slate-100 hover:shadow-sm'}`}>
+                                <div className="col-span-8 md:col-span-5 flex items-center gap-2 md:gap-3">
+                                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-xs md:text-sm font-bold shadow-sm flex-shrink-0 ${guest.status === 'Checked In' ? 'bg-teal-100 text-teal-700' : 'bg-slate-100 text-slate-500'}`}>
+                                        {guest.name.charAt(0)}
                                     </div>
-                                    <div className="col-span-3 hidden md:flex items-center">
-                                        <span className="text-xs text-slate-500 font-medium px-2 py-1 bg-slate-100 rounded-md">{guest.role}</span>
-                                    </div>
-                                    <div className="col-span-4 md:col-span-4 flex justify-end">
-                                        {guest.status === 'Checked In' ? (
-                                            <div className="flex flex-col items-end">
-                                                <span className="flex items-center gap-1 text-teal-600 text-xs md:text-sm font-bold bg-white px-2 py-1 md:px-3 rounded-full shadow-sm border border-teal-100">
-                                                    <Icons.CheckCircle size={12} className="md:w-3.5 md:h-3.5" /> Checked In
-                                                </span>
-                                            </div>
-                                        ) : (
-                                            <button onClick={() => handleCheckIn(guest.id)} className="text-xs md:text-sm font-medium text-slate-500 hover:text-teal-600 hover:bg-teal-50 px-3 py-1.5 md:px-4 md:py-2 rounded-lg border border-slate-200 hover:border-teal-200 transition-all bg-white shadow-sm">
-                                                Check In
-                                            </button>
-                                        )}
+                                    <div className="truncate pr-2">
+                                        <h4 className={`font-semibold text-sm truncate ${guest.status === 'Checked In' ? 'text-teal-900' : 'text-slate-700'}`}>{guest.name}</h4>
+                                        <p className="text-[10px] text-slate-400 md:hidden flex items-center gap-1">{guest.role}</p>
                                     </div>
                                 </div>
-                            ))}
+                                <div className="col-span-3 hidden md:flex items-center">
+                                    <span className="text-xs text-slate-500 font-medium px-2 py-1 bg-slate-100 rounded-md">{guest.role}</span>
+                                </div>
+                                <div className="col-span-4 md:col-span-4 flex justify-end">
+                                    {guest.status === 'Checked In' ? (
+                                        <div className="flex flex-col items-end">
+                                            <span className="flex items-center gap-1 text-teal-600 text-xs md:text-sm font-bold bg-white px-2 py-1 md:px-3 rounded-full shadow-sm border border-teal-100">
+                                                <Icons.CheckCircle size={12} className="md:w-3.5 md:h-3.5" /> Checked In
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        <button onClick={() => handleCheckIn(guest.id)} className="text-xs md:text-sm font-medium text-slate-500 hover:text-teal-600 hover:bg-teal-50 px-3 py-1.5 md:px-4 md:py-2 rounded-lg border border-slate-200 hover:border-teal-200 transition-all bg-white shadow-sm">
+                                            Check In
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
                 </div>
             </div>
         </div>

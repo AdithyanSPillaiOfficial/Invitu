@@ -1,18 +1,22 @@
 import { NextResponse } from "next/server";
-import { fetchObjectsByParam, getUserWithSession } from "../db";
+import { getDB, getUserWithSession } from "../db";
 import { ObjectId } from "mongodb";
 
 export async function POST(request) {
     const req = await request.json();
+    const db = await getDB();
+
     try {
-        if (!req.sessionid || !req.eventid) {
+        if (!req.sessionid || !req.inviteid) {
             return NextResponse.json({
                 success: false,
                 rescode: 0,
                 error: "Invalid Request"
             })
         }
+
         const user = await getUserWithSession(req.sessionid);
+
         if (!user) {
             return NextResponse.json({
                 success: false,
@@ -20,37 +24,42 @@ export async function POST(request) {
                 error: "Invalid Session"
             })
         }
-        const events = await fetchObjectsByParam('_id', new ObjectId(req.eventid), 'events');
-        if(events.length < 1) {
+        const result = await db.collection("events").updateOne(
+            { 
+                "attendees.inviteid": new ObjectId(req.inviteid),
+                "_id": new ObjectId(req.eventid),
+                $or: [
+                    {"owner" : new ObjectId(user._id)},
+                    {"checkinaccounts": new ObjectId(user._id)}
+                ]
+            },   // find doc + array element
+            {
+                $set: {
+                    "attendees.$.status": "Checked In"
+                }
+            }
+        );
+
+        if(result.modifiedCount > 0) {
             return NextResponse.json({
-                success: false,
-                rescode: 303,
-                error: "Invalid Event"
+                success: true,
             })
         }
-        const event = events[0];
-        
-        if(!event.owner.equals(user._id) && !event.checkinaccounts?.some(id => id.equals(user._id))) {
+        else {
             return NextResponse.json({
                 success: false,
-                rescode: 506,
-                error: "This Event is not Assiciated WIth Your Account"
+                rescode: 305,
+                error: "Invalid event ID or You cannot checkin this user"
             })
         }
-        delete event.owner;
-        delete event.checkinaccounts;
-        return NextResponse.json({
-            success: true,
-            attendees: event.attendees,
-            eventtitle: event.title
-        })
-        
+
     } catch (error) {
-        console.error(error);
+        console.log(error);
         return NextResponse.json({
             success: false,
             rescode: 202,
             error: "Something went wrong"
         })
     }
+
 }

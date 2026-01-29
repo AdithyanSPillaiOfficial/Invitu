@@ -47,6 +47,18 @@ const connectToDatabase = async () => {
     }
 };
 
+const getDB = async () => {
+    if(db) {
+        console.log("DB Object Exist, returning object")
+        return db;
+    }
+    else {
+        console.log("Db Object doesnot exists, creating new one")
+        await connectToDatabase();
+        return db;
+    }
+}
+
 // Function to add a new object to the MongoDB collection
 const addObject = async (newObject, collectionName) => {
     try {
@@ -187,4 +199,4 @@ const deleteObjectWithQuery = async (collectionName, query) => {
 }
 
 // Export the functions for external usage
-module.exports = { addObject, fetchObjectsByParam, getAllObjects, getUserWithSession, updateDocumentwithId, fetchObjectsByParams, updateDocumentObjectwithId, deleteObjectWithQuery };
+module.exports = { getDB, addObject, fetchObjectsByParam, getAllObjects, getUserWithSession, updateDocumentwithId, fetchObjectsByParams, updateDocumentObjectwithId, deleteObjectWithQuery };
