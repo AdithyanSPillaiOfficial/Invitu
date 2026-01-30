@@ -168,6 +168,12 @@ function EventView({ eventid }) {
                 }} className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 ease-in-out transform hover:scale-105">
                     Manage Attendees
                 </button>
+
+                <button onClick={() => {
+                    router.push(`${window.location.pathname}/checkinaccounts`);
+                }} className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition duration-300 ease-in-out transform hover:scale-105">
+                    Manage Check In Accounts
+                </button>
             </section>
 
             {/* <!-- Call to Action / Message --> */}

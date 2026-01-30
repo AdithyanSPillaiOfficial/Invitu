@@ -19,7 +19,7 @@ function page() {
   
   
   async function fetchEvents() {
-    const result = await fetch('/api/getcheckinaccounts', {
+    const result = await fetch('/api/getcheckinevents', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

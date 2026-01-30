@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { getDB, getUserWithSession } from "../db";
+import { fetchObjectsByParam, getDB, getUserWithSession } from "../db";
 import { ObjectId } from "mongodb";
 
 export async function POST(request) {
-    const req = await request.json();
+    const req = await request.json();;
     try {
-        if (!req.sessionid || !req.eventid) {
+        if (!req.sessionid || !req.deleteusermail || !req.eventid) {
             return NextResponse.json({
                 success: false,
                 rescode: 0,
@@ -23,38 +23,43 @@ export async function POST(request) {
             })
         }
 
+        let delUser = await fetchObjectsByParam('email', req.deleteusermail, 'users');
+        if (delUser.length < 1) {
+            return NextResponse.json({
+                success: false,
+                rescode: 503,
+                error: "An account associated with given mail doesnot exist"
+            })
+        }
+        delUser = delUser[0];
+
         const db = await getDB();
-        const event = await db.collection("events").aggregate([
+        const result = await db.collection("events").updateOne(
+            { _id: new ObjectId(req.eventid) },
             {
-                $match: {
-                    _id: new ObjectId(req.eventid)
-                }
-            },
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "checkinaccounts",
-                    foreignField: "_id",
-                    as: "checkinaccounts"
+                $pull: {
+                    checkinaccounts: new ObjectId(delUser._id)
                 }
             }
-        ]).toArray();
-        console.log(event);
-        if(event.length > 0) {
-            const checkinaccounts = event[0].checkinaccounts.map(({_id, name, username, email}) => ({_id, name, username, email}));
+        );
+
+        if (result.modifiedCount > 0) {
             return NextResponse.json({
                 success: true,
-                checkinaccounts: checkinaccounts
-            });
+            })
         }
         else {
             return NextResponse.json({
                 success: false,
-                rescode: 305,
-                error: "Invalid Event or Your Account is not associated with the event"
+                rescode: 5.3,
+                error: "The event is not associated with your account"
             })
         }
+
+
+
     } catch (error) {
+        console.error(error)
         return NextResponse.json({
             success: false,
             rescode: 202,
