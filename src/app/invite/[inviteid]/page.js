@@ -1,6 +1,7 @@
 "use client";
 import BirthdayInvite from '@/components/invites/BirthdayInvite';
 import HousewarmingInvite from '@/components/invites/HouseWarming';
+import OthersEventInvites from '@/components/invites/OthersEventInvites';
 import WeddingInvite from '@/components/invites/WeddingInvite';
 import React, { use, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -37,7 +38,7 @@ function Page({ params }) {
       {(invite?.event?.type === "wedding" || invite?.event?.type === "engagement") && (<WeddingInvite invite={invite} />)}
       {invite?.event?.type === "housewarming" && <HousewarmingInvite invite={invite} />}
       {invite?.event?.type === "birthday" && <BirthdayInvite invite={invite} />}
-      {invite?.event?.type === "others" && <HousewarmingInvite invite={invite} />}
+      {invite?.event?.type === "others" && <OthersEventInvites invite={invite} />}
     </div>
   );
 }
