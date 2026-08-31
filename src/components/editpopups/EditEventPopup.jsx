@@ -85,6 +85,7 @@ function EditEventPopup({ togglePopup, event }) {
                 <option value="engagement">Engagement</option>
                 <option value="housewarming">House Warming</option>
                 <option value="birthday">Birthday</option>
+                <option value="naming">Naming Ceremoney</option>
                 <option value="others">Others</option>
               </select>
             </div>
@@ -211,7 +212,7 @@ function EditEventPopup({ togglePopup, event }) {
             }
 
             {
-              eventDetails.type === "birthday" && (
+              (eventDetails.type === "birthday" || eventDetails.type === "naming") && (
                 <div>
                   <label htmlFor="event-birthday" className="block text-sm font-medium text-gray-700 mb-1">May we know the name of the one we’re celebrating?</label>
                   <input

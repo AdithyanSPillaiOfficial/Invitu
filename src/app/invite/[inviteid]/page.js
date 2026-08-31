@@ -1,6 +1,7 @@
 "use client";
 import BirthdayInvite from '@/components/invites/BirthdayInvite';
 import HousewarmingInvite from '@/components/invites/HouseWarming';
+import NamingCeremonyInvite from '@/components/invites/NamingCeremonyInvite';
 import OthersEventInvites from '@/components/invites/OthersEventInvites';
 import WeddingInvite from '@/components/invites/WeddingInvite';
 import React, { use, useEffect, useState } from 'react';
@@ -38,6 +39,7 @@ function Page({ params }) {
       {(invite?.event?.type === "wedding" || invite?.event?.type === "engagement") && (<WeddingInvite invite={invite} />)}
       {invite?.event?.type === "housewarming" && <HousewarmingInvite invite={invite} />}
       {invite?.event?.type === "birthday" && <BirthdayInvite invite={invite} />}
+      {invite?.event?.type === "naming" && <NamingCeremonyInvite invite={invite} />}
       {invite?.event?.type === "others" && <OthersEventInvites invite={invite} />}
     </div>
   );
