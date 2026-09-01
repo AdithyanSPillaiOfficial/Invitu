@@ -53,7 +53,7 @@ function AddEventPopup({ togglePopup, setEvents }) {
     <div>
       <Popup title="Add Event" togglePopup={togglePopup}>
         <div className="space-y-6">
-          <h2 className="text-3xl font-semibold text-center text-teal-700 mb-6">Make a Story With Us!</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold text-center text-teal-700 mb-6">Make a Story With Us!</h2>
           <p className="text-center text-gray-600 mb-4">Enter the details given below.</p>
 
           <form className="space-y-5" onSubmit={(e) => handleAddEvent(e)}>
