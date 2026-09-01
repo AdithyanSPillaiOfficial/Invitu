@@ -41,11 +41,11 @@ function InviteCodePopup({ togglePopup, inviteId }) {
     return (
         <div className='box-border'>
             <Popup title={"Share Invite"} togglePopup={togglePopup}>
-                <div className="w-full flex md:flex-row flex-col justify-center items-center box-border">
+                <div className="w-auto flex md:flex-row flex-col justify-center items-center box-border">
                     {/* Title */}
                     <br />
 
-                    <div className='w-full flex flex-col items-center text-center mb-5 p-3 md:mr-3 border border-teal-500 rounded-md'>
+                    <div className='w-65 flex flex-col items-center text-center mb-5 p-3 md:mr-3 border border-teal-500 rounded-md'>
                         <div>Scan to Share</div>
                         <QRCode value={urlToCopy} size={200} />
                     </div>
