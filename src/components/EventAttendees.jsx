@@ -16,6 +16,7 @@ function EventAttendees({ eventId }) {
     const [showInvite, setShowInvite] = useState({show : false, inviteid : ''});
     const [showEditInvite, setShowEditInvite] = useState(null);
     const [showDeleteAttendee, setShowDeleteAttendee] = useState(false);
+    const [event, setEvent] = useState({});
     const router = useRouter();
 
     function setUserImage(name) {
@@ -48,6 +49,7 @@ function EventAttendees({ eventId }) {
             if (res.success) {
                 setAttendees(res.event.attendees || [])
                 setAttendeesArr(res.event.attendees || [])
+                setEvent(res.event);
                 console.log(res.event.attendees)
             }
             else {
@@ -183,7 +185,7 @@ function EventAttendees({ eventId }) {
 
             </div>
             {popupActive && (<AddAttendeePopup setPopup={setPopupActive} eventId={eventId} sucessCallback={successCallback} />)}
-            {showInvite.show && (<InviteCodePopup togglePopup={(val) => setShowInvite({...showInvite, show : val})} inviteId={showInvite.inviteid}  />)}
+            {showInvite.show && (<InviteCodePopup togglePopup={(val) => setShowInvite({...showInvite, show : val})} inviteId={showInvite.inviteid} event={event} />)}
             {showEditInvite && (<EditAttendeePopup setPopup={setShowEditInvite} eventId={eventId} attendeeInfo={showEditInvite} sucessCallback={successCallback} />)}
             {showDeleteAttendee && (<ConfirmDelete attendee={showDeleteAttendee} togglePopup={setShowDeleteAttendee} successCallback={() => deleteAttendee(showDeleteAttendee)} />)}
         </div>
