@@ -76,7 +76,7 @@ export async function generateMetadata({ params }) {
                 process.env.NEXT_PUBLIC_SITE_URL
             ).toString()
         : `${process.env.NEXT_PUBLIC_SITE_URL}/invite/${inviteid}/opengraph-image`;
-
+    console.log(imageUrl)
     return {
         title: `${eventName} | You're Invited`,
 

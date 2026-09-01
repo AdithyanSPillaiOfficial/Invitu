@@ -17,7 +17,8 @@ function AddEventPopup({ togglePopup, setEvents }) {
     birthdayperson : '',
     otherevent: '',
     time: '',
-    endtime : ''
+    endtime : '',
+    image : ''
   });
   const [enableEndtime, setEnableEndtime] = useState(false);
 
@@ -240,6 +241,20 @@ function AddEventPopup({ togglePopup, setEvents }) {
                 </div>
               )
             }
+
+            <div>
+              <label htmlFor="event-image" className="block text-sm font-medium text-gray-700 mb-1">Event Thumbnail Image</label>
+              <input
+                type="text"
+                id="event-location"
+                name="location"
+                placeholder="Your Save the Date Image"
+                className="w-full px-4 py-2 border text-black outline-teal-600 border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 transition duration-200 ease-in-out"
+                required
+                value={eventDetails.image}
+                onChange={(e) => setEventDetails({ ...eventDetails, image: e.target.value })}
+              />
+            </div>
 
 
 
