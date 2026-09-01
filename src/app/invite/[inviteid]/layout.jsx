@@ -1,16 +1,8 @@
-import { headers } from "next/headers";
 import { cache } from "react";
 
 const getInvite = cache(async (inviteid) => {
-    // Await headers to read the request information
-    const headersList = await headers();
-    // Get the standard 'host' header or fallback to 'x-forwarded-host' for proxies
-    let hostname = headersList.get('x-forwarded-host') || headersList.get('host');
-    if (!hostname) hostname = process?.env?.NEXT_PUBLIC_SITE_HOST;
-    console.log('Hostname : ' + hostname)
-
     const result = await fetch(
-        `https://${hostname}/api/getinvitedetails`,
+        `${process.env.NEXT_PUBLIC_SITE_URL}/api/getinvitedetails`,
         {
             method: "POST",
             headers: {
@@ -33,12 +25,6 @@ export async function generateMetadata({ params }) {
 
     const invite = await getInvite(inviteid);
     const event = invite?.event;
-
-    // Await headers to read the request information
-    const headersList = await headers();
-    // Get the standard 'host' header or fallback to 'x-forwarded-host' for proxies
-    let hostname = headersList.get('x-forwarded-host') || headersList.get('host');
-    if (!hostname) hostname = process?.env?.NEXT_PUBLIC_SITE_HOST;
 
     if (!event) {
         return {
@@ -66,9 +52,10 @@ export async function generateMetadata({ params }) {
         : "";
 
     const time = event.time
-        ? `${event.time}${event.endtime
-            ? ` - ${event.endtime}`
-            : ""
+        ? `${event.time}${
+            event.endtime
+                ? ` - ${event.endtime}`
+                : ""
         }`
         : "";
 
@@ -86,9 +73,9 @@ export async function generateMetadata({ params }) {
             ? event.image
             : new URL(
                 event.image,
-                hostname
+                process.env.NEXT_PUBLIC_SITE_URL
             ).toString()
-        : `https://${hostname}/invite/${inviteid}/opengraph-image`;
+        : `${process.env.NEXT_PUBLIC_SITE_URL}/invite/${inviteid}/opengraph-image`;
 
     return {
         title: `${eventName} | You're Invited`,

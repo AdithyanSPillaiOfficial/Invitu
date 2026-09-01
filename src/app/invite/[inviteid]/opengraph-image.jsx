@@ -3,13 +3,8 @@ import { ImageResponse } from "next/og";
 export const runtime = "edge";
 
 async function getInvite(inviteid) {
-    // Await headers to read the request information
-    const headersList = await headers();
-    // Get the standard 'host' header or fallback to 'x-forwarded-host' for proxies
-    let hostname = headersList.get('x-forwarded-host') || headersList.get('host');
-    if (!hostname) hostname = process?.env?.NEXT_PUBLIC_SITE_HOST;
     const response = await fetch(
-        `https://${hostname}/api/getinvitedetails`,
+        `${process.env.NEXT_PUBLIC_SITE_URL}/api/getinvitedetails`,
         {
             method: "POST",
             headers: {
@@ -44,18 +39,19 @@ export default async function Image({ params }) {
 
     const date = event?.date
         ? new Date(event.date).toLocaleDateString("en-US", {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-        })
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+          })
         : "";
 
     const time = event?.time
-        ? `${event.time}${event?.endtime
-            ? ` - ${event.endtime}`
-            : ""
-        }`
+        ? `${event.time}${
+              event?.endtime
+                  ? ` - ${event.endtime}`
+                  : ""
+          }`
         : "";
 
     return new ImageResponse(
