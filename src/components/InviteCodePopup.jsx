@@ -1,5 +1,6 @@
 import Popup from '@/widgets/Popup'
 import React, { useRef, useState } from 'react'
+import QRCode from 'react-qr-code';
 import { toast } from 'react-toastify';
 
 function InviteCodePopup({ togglePopup, inviteId }) {
@@ -40,12 +41,17 @@ function InviteCodePopup({ togglePopup, inviteId }) {
     return (
         <div className='box-border'>
             <Popup title={"Share Invite"} togglePopup={togglePopup}>
-                <div className="w-full">
+                <div className="w-full flex md:flex-row flex-col justify-center items-center box-border">
                     {/* Title */}
                     <br />
 
+                    <div className='w-full flex flex-col items-center text-center mb-5 p-3 md:mr-3 border border-teal-500 rounded-md'>
+                        <div>Scan to Share</div>
+                        <QRCode value={urlToCopy} size={200} />
+                    </div>
+
                     {/* URL Display and Copy Button Container */}
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 space-y-2 sm:space-y-0 bg-teal-50 dark:bg-gray-700 p-3 border border-teal-500 rounded-md">
+                    <div className="flex flex-col h-15 max-w-full sm:flex-row sm:items-center sm:space-x-2 space-y-2 sm:space-y-0 bg-teal-50 dark:bg-gray-700 p-3 border border-teal-500 rounded-md gap-5">
                         {/* URL text display */}
                         <div
                             ref={urlRef}
