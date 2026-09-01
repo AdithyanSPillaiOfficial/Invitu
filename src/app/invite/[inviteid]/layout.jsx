@@ -5,7 +5,7 @@ const getInvite = cache(async (inviteid) => {
     // Await headers to read the request information
     const headersList = await headers();
     // Get the standard 'host' header or fallback to 'x-forwarded-host' for proxies
-    let hostname = headersList.get('x-forwarded-host') || headersList.get('host') || '';
+    let hostname = headersList.get('x-forwarded-host') || headersList.get('host');
     if (!hostname) hostname = process?.env?.NEXT_PUBLIC_SITE_HOST;
     console.log('Hostname : ' + hostname)
 
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }) {
     // Await headers to read the request information
     const headersList = await headers();
     // Get the standard 'host' header or fallback to 'x-forwarded-host' for proxies
-    let hostname = headersList.get('x-forwarded-host') || headersList.get('host') || '';
+    let hostname = headersList.get('x-forwarded-host') || headersList.get('host');
     if (!hostname) hostname = process?.env?.NEXT_PUBLIC_SITE_HOST;
 
     if (!event) {
