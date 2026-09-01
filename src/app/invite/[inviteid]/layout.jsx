@@ -6,6 +6,7 @@ const getInvite = cache(async (inviteid) => {
     const headersList = await headers();
     // Get the standard 'host' header or fallback to 'x-forwarded-host' for proxies
     const hostname = headersList.get('x-forwarded-host') || headersList.get('host') || '';
+    console.log('Hostname : '+hostname)
 
     const result = await fetch(
         `https://${hostname}/api/getinvitedetails`,
