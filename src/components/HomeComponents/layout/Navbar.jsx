@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Logo } from '@/components/HomeComponents/ui/Logo';
 import { Button } from '@/components/HomeComponents/ui/Button';
-import { ArrowRight, Moon, Sun, Menu, X } from 'lucide-react';
+import { ArrowRight, Moon, Sun, Menu, X, Link2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
@@ -111,6 +111,12 @@ export const Navbar = () => {
                             <ArrowRight size={12} />
                         </span>
                     </Button>
+                    <Button variant="primary" size="pill" className="group flex items-center gap-2 text-white bg-highlight-green hover:bg-[#2a6347]" onClick = {() => router.push("/knowyourinvites")}>
+                        Check Your Invites
+                        <span className="bg-black/20 rounded-full p-1 ml-1 group-hover:translate-x-0.5 transition-transform">
+                            <Link2 size={12} />
+                        </span>
+                    </Button>
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -147,6 +153,7 @@ export const Navbar = () => {
                     <div className="flex flex-col gap-2 mt-2">
                         <Button variant="ghost" className="justify-start text-gray-900 dark:text-white" onClick = {() => router.push("/login")}>Log In</Button>
                         <Button variant="primary" className="justify-center" onClick = {() => router.push("/login?signup=true")}>Join Now</Button>
+                        <Button variant="primary" className="justify-center" onClick = {() => router.push("/knowyourinvites")}>Check Your Invites</Button>
                     </div>
                 </div>
             )}
